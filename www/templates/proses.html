@@ -1,9 +1,10 @@
 <ion-view title="Proses" id="page3">
     <ion-content padding="true" class="has-header">
-        <ion-list id="proses-list4">
+        <ion-list id="proses-list4" ng-repeat="order in orders">
             <ion-item class="item-avatar  " id="proses-list-item8" ui-sref="tabsController.transaksi">
-                <h2>Rio</h2>
-                <p>#idTransaksi</p>
+                <h2>{{ order.nama }}</h2>
+                <p>{{ order.index }}</p>
+                <p>{{ order.alamat }}</p>
             </ion-item>
         </ion-list>
     </ion-content>

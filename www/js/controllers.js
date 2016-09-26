@@ -7,14 +7,18 @@ angular.module('app.controllers', [])
 		duration: 5000
 	});
 
-	Services.getStatusQueue(kurir).then(function(orders) {
+	var kurir = "kurma";
+
+	Services.getOrderQueue(kurir).then(function(orders) {
 		if (orders) {
 			$scope.orders = [];
 			for(var r in orders) {
-				Services.getOrderDetails(r).then(function(order) {
+				Services.getOrderDetails(kurir, r).then(function(order) {
 					$scope.orders.push(order);
 
 					$ionicLoading.hide();
+				}, function(err) {
+					console.log(err);
 				});
 			}
 		}
@@ -31,11 +35,13 @@ angular.module('app.controllers', [])
 		duration: 5000
 	})
 
-	Services.getStatusProcess(kurir).then(function(orders) {
+	var kurir = "kurma";
+
+	Services.getOrderProcess(kurir).then(function(orders) {
 		if (orders) {
 			$scope.orders = [];
 			for(var r in orders) {
-				Services.getOrderDetails(r).then(function(order) {
+				Services.getOrderDetails(kurir, r).then(function(order) {
 					$scope.orders.push(order);
 
 					$ionicLoading.hide();
@@ -55,11 +61,13 @@ angular.module('app.controllers', [])
 		duration: 5000
 	})
 
-	Services.getStatusDone(kurir).then(function(orders) {
+	var kurir = "kurma";
+
+	Services.getOrderDone(kurir).then(function(orders) {
 		if (orders) {
 			$scope.orders = [];
 			for(var r in orders) {
-				Services.getOrderDetails(r).then(function(order) {
+				Services.getOrderDetails(kurir, r).then(function(order) {
 					$scope.orders.push(order);
 
 					$ionicLoading.hide();

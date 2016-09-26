@@ -23,7 +23,7 @@ angular.module('app.services', [])
 
 .service('Services', function($q) {
 	// get All order of Kurir
-	this.getAllOrder = function(kurir) {
+	this.getOrders = function(kurir) {
 		return promiseValue(
 			order.child(kurir)
 		);
@@ -44,23 +44,23 @@ angular.module('app.services', [])
 	}
 
 	// get status done
-	this.getStatusDone = function(kurir) {
+	this.getOrderDone = function(kurir) {
 		return promiseValue(
 			status_done.child(kurir)
 		);
 	}
 
 	// get status cancel
-	this.getStatusCancel = function(kurir) {
+	this.getOrderCancel = function(kurir) {
 		return promiseValue(
 			status_cancel(kurir)
 		);
 	}
 
 	// get order detail
-	this.getOrderDetails = function(index) {
+	this.getOrderDetails = function(kurir, index) {
 		return promiseAdded(
-			order.orderByChild('index').equalTo(index)
+			order.child(kurir).orderByChild('index').equalTo(index)
 		);
 	}
 
