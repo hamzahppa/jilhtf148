@@ -18,6 +18,61 @@ $dark:                            #444 !default;
 // The path for our ionicons font files, relative to the built CSS in www/css
 $ionicons-font-path: "../lib/ionic/fonts" !default;
 
+// variable color
+$background-color: #FFFFFF;
+$auth-big-btn-bg: #FFF;
+$auth-small-btn-color: #FFF;
+$facebook-blue: #294886;
+$welcome-color: #FF7258;
+
 // Include all of Ionic
 @import "www/lib/ionic/scss/ionic";
+
+.login
+{
+	background-color: $background-color;
+
+	.top-content
+	{
+    	height: 66%;
+
+		.app-copy
+		{
+			text-align: center;
+			padding-top: 13vh;
+		}
+
+		.app-logo
+		{
+			font-size: 60px;
+			font-family: sans-serif;
+			font-weight: 600;
+			color: $welcome-color;
+			letter-spacing: 8px;
+			text-transform: uppercase;
+		}
+
+		.app-tagline
+		{
+			font-size: 16px;
+			margin-top: 0px;
+			font-weight: 500;
+			color: rgba(1, 178, 177, 0.95);
+		}
+	}
+
+	.bottom-content
+	{
+    	height: 34%;
+
+		.facebook-sign-in
+		{
+			border-radius: 4px;
+			font-weight: 500;
+			color: $auth-small-btn-color;
+			background-color: $facebook-blue;
+			border-color: darken($facebook-blue, 2);
+		}
+	}
+}
 

@@ -1,6 +1,24 @@
-<ion-view title="Login" hide-nav-bar="true" hide-back-button="true" id="page5">
-    <ion-content padding="true" style="background: url(img/j82UC5nTkaN2SlEl9KgJ_2016-03-27-07-38-55-1.jpg) no-repeat center;background-size:cover;" class="manual-ios-statusbar-padding">
-        <div class="spacer" style="width: 300px; height: 48px;"></div>
+<ion-view title="Login" hide-nav-bar="true" hide-back-button="true" id="page5" cache-view="false" class="login">
+    <ion-content padding="true" scroll="false">
+        <div class="top-content row">
+            <div class="app-copy col col-top">
+                <!-- <h1 class="app-logo">MANGAN</h1> -->
+                <img src="img//logomangan.png" width="90%">
+                <p class="app-tagline">
+                    Bergabung untuk memesan, berkomentar dan memberikan ulasan untuk kamu bagikan kepada orang lain
+                </p>
+            </div>
+        </div>
+        <div class="bottom-content row">
+            <div class="col col-bottom">
+<!--                 <button class="facebook-sign-in button button-block" ng-click="fblogin()">
+                    Log in with Facebook
+                </button> -->
+                <a ui-sref="tabsController.order" id="login-button1" class="facebook-sign-in button button-block"><i class="ion-social-facebook" style="margin-right: 10px;"></i>Log in with Facebook</a>
+            </div>
+        </div>
+
+<!--         <div class="spacer" style="width: 300px; height: 48px;"></div>
         <div>
             <img src="img/4fmQ6ZiNTmaP8S1iORpD_logo mangan s.png" width="25%" height="auto" style="display: block; margin-left: auto; margin-right: auto;">
         </div>
@@ -18,6 +36,6 @@
             </ion-list>
             <div class="spacer" style="height: 40px;"></div>
             <a ui-sref="tabsController.order" id="login-button1" class=" button button-positive  button-block ">Log in</a>
-        </form>
+        </form> -->
     </ion-content>
 </ion-view>
