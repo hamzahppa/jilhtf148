@@ -44,12 +44,6 @@ angular.module('app.routes', ['ionicUIRouter'])
     abstract:true
   })
 
-  .state('login', {
-    url: '/page5',
-    templateUrl: 'templates/login.html',
-    controller: 'loginCtrl'
-  })
-
   /* 
     The IonicUIRouter.js UI-Router Modification is being used for this route.
     To navigate to this route, do NOT use a URL. Instead use one of the following:
@@ -88,8 +82,12 @@ angular.module('app.routes', ['ionicUIRouter'])
     controller: 'ditolakCtrl'
   })
 
-$urlRouterProvider.otherwise('/page5')
+  .state('login', {
+    url: '/login-page',
+    templateUrl: 'templates/login.html',
+    controller: 'loginCtrl'
+  })
 
-  
+$urlRouterProvider.otherwise('/page1/page2')
 
 });
