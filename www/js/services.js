@@ -71,7 +71,7 @@ angular.module('app.services', [])
 			promise.resolve(data.val());
 		}, function(err) {
 			promise.reject(null);
-			console.log("Error fetch data");
+			console.log("Serv Error fetch data");
 		});
 
 		return promise.promise;
@@ -84,7 +84,7 @@ angular.module('app.services', [])
 			promise.resolve(data.val());
 		}, function(err) {
 			promise.reject(null);
-			console.log("Error fetch data");
+			console.log("Serv Error fetch data");
 		});
 
 		return promise.promise;

@@ -24,13 +24,20 @@ $auth-big-btn-bg: #FFF;
 $auth-small-btn-color: #FFF;
 $facebook-blue: #294886;
 $welcome-color: #FF7258;
+$mangan: #01b2b1;
 
 // Include all of Ionic
 @import "www/lib/ionic/scss/ionic";
 
 .login
 {
-	background-color: $background-color;
+	// background-color: $background-color;
+background: #01b2b1; /* Old browsers */
+background: -moz-linear-gradient(top,  #01b2b1 0%, #f28509 100%); /* FF3.6-15 */
+background: -webkit-linear-gradient(top,  #01b2b1 0%,#f28509 100%); /* Chrome10-25,Safari5.1-6 */
+background: linear-gradient(to bottom,  #01b2b1 0%,#f28509 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#01b2b1', endColorstr='#f28509',GradientType=0 ); /* IE6-9 */
+
 
 	.top-content
 	{
@@ -57,7 +64,7 @@ $welcome-color: #FF7258;
 			font-size: 16px;
 			margin-top: 0px;
 			font-weight: 500;
-			color: rgba(1, 178, 177, 0.95);
+			color: $background-color;
 		}
 	}
 
@@ -70,8 +77,8 @@ $welcome-color: #FF7258;
 			border-radius: 4px;
 			font-weight: 500;
 			color: $auth-small-btn-color;
-			background-color: $facebook-blue;
-			border-color: darken($facebook-blue, 2);
+			background-color: $mangan;
+			border-color: darken($mangan, 2);
 		}
 	}
 }
