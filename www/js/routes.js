@@ -73,6 +73,9 @@ angular.module('app.routes', ['ionicUIRouter'])
         templateUrl: 'templates/transaksi.html',
         controller: 'transaksiCtrl'
       }
+    },
+    params: {
+      index: null
     }
   })
 
@@ -82,12 +85,18 @@ angular.module('app.routes', ['ionicUIRouter'])
     controller: 'ditolakCtrl'
   })
 
-  .state('login', {
-    url: '/login-page',
-    templateUrl: 'templates/login.html',
-    controller: 'loginCtrl'
+  .state('profil', {
+    url: '/profil',
+    templateUrl: 'templates/profil.html',
+    controller: 'profilCtrl'
   })
 
-$urlRouterProvider.otherwise('/page1/page2')
+  .state('loginGate', {
+    url: '/loginGate',
+    templateUrl: 'templates/loginGate.html',
+    controller: 'loginGateCtrl'
+  })
+
+$urlRouterProvider.otherwise('/loginGate')
 
 });

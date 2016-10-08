@@ -14,6 +14,7 @@ var status_queue = firebase.database().ref('statusOrder').child('queue');
 var status_process = firebase.database().ref('statusOrder').child('process');
 var status_done = firebase.database().ref('statusOrder').child('done');
 var status_cancel = firebase.database().ref('statusOrder').child('cancel');
+var kurir = firebase.database().ref('dataKurir');
 
 angular.module('app.services', [])
 
@@ -21,7 +22,33 @@ angular.module('app.services', [])
 
 }])
 
-.service('Services', function($q) {
+.service('Services', function($q, $localStorage) {
+	localStorage
+	$localStorage = $localStorage.$default({
+		email : null,
+		kurir : null
+	})
+
+	this.connectFirebase = function() {
+		return promiseAdded(
+			firebase.database().ref('check')
+		);
+	}
+
+	this.checkLogin = function() {
+		var user = firebase.auth().currentUser;
+		if (user) {
+			return true;
+		} return false;
+	}
+
+	// get Kurir Data
+	this.getKurirData = function(email) {
+		return promiseAdded(
+			kurir.orderByChild('email').equalTo(email)
+		);
+	}
+
 	// get All order of Kurir
 	this.getOrders = function(kurir) {
 		return promiseValue(
@@ -53,7 +80,7 @@ angular.module('app.services', [])
 	// get status cancel
 	this.getOrderCancel = function(kurir) {
 		return promiseValue(
-			status_cancel(kurir)
+			status_cancel.child(kurir)
 		);
 	}
 

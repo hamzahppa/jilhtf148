@@ -3,26 +3,26 @@
         <div>
             <img src="img/pE5n7nawSgiuc1CEkpj2_people_icon.jpg" width="20%" height="auto" style="display: block; margin-left: auto; margin-right: auto;">
         </div>
-        <h1 id="transaksi-heading2" style="color:#000000;">idTransaksi</h1>
+        <h1 id="transaksi-heading2" style="color:#000000;">{{order.index}}</h1>
         <form id="transaksi-form2" class="list ">
             <label class="item item-input " id="transaksi-input3">
                 <span class="input-label">Nama</span>
-                <input type="text" placeholder="Mr Tukul">
+                <input type="text" value="{{order.nama}}" readonly="true">
             </label>
             <label class="item item-input " id="transaksi-input4">
                 <span class="input-label">Nominal</span>
-                <input type="text" placeholder="">
+                <input type="text" value="{{order.total}}" readonly="true">
             </label>
             <label class="item item-input " id="transaksi-textarea1">
-                <span class="input-label">Alamat</span><textarea placeholder=""></textarea>
+                <span class="input-label">Alamat</span><textarea readonly="true">{{order.alamat}}</textarea>
             </label>
             <label class="item item-input " id="transaksi-input5">
                 <span class="input-label">Jam</span>
-                <input type="text" placeholder="">
+                <input type="text" value="{{order.jam}}" readonly="true">
             </label>
             <ion-item class="item-avatar  " id="transaksi-list-item15">
                 <h2>Kontak</h2>
-                <p>071231231</p>
+                <p>{{order.kontak}}</p>
             </ion-item>
             <ion-item class="item-divider " id="transaksi-list-item-divider1">Menu</ion-item>
             <ion-item class="item-thumbnail-left  " id="transaksi-list-item13">

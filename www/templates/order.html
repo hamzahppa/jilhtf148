@@ -1,13 +1,11 @@
 <ion-view title="Order" id="page2">
     <ion-content padding="true" class="has-header">
-        <ion-list id="order-list3" ng-repeat="order in orders">
-            <ion-item class="item-avatar" id="order-list-item5" ui-sref="tabsController.transaksi">
+        <ion-list id="order-list3">
+            <ion-item class="item-avatar" id="order-list-item5" ui-sref="tabsController.transaksi({index: order.index})" ng-repeat="order in orders">
                 <h2>{{ order.nama }}</h2>
                 <p>{{ order.index }}</p>
                 <p>{{ order.alamat }}</p>
             </ion-item>
         </ion-list>
-        <button id="transaksi-button3" class=" button button-balanced  button-block " ng-click="openModalLogin()">Login</button>
-        <button id="transaksi-button3" class=" button button-balanced  button-block " ng-click="logout()">Logout</button>
     </ion-content>
 </ion-view>

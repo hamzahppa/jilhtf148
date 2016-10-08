@@ -1,7 +1,7 @@
 <ion-view title="Riwayat" id="page4">
     <ion-content padding="true" class="has-header">
-        <ion-list id="riwayat-list5" ng-repeat="order in orders">
-            <ion-item class="item-avatar  " id="riwayat-list-item9" ui-sref="tabsController.transaksi">
+        <ion-list id="riwayat-list5">
+            <ion-item class="item-avatar  " id="riwayat-list-item9" ui-sref="tabsController.transaksi({index: order.index})" ng-repeat="order in orders">
                 <h2>{{ order.nama }}</h2>
                 <p>{{ order.index }}</p>
                 <p>{{ order.alamat }}</p>

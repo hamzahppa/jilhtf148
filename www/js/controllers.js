@@ -1,65 +1,47 @@
 angular.module('app.controllers', [])
-  
-.controller('orderCtrl', function ($scope, $stateParams, Services, $ionicLoading, $ionicModal, $state) {
-	// some code here
-	var kurma = false;
-
+ 
+.controller('loginGateCtrl', function ($scope, $stateParams, $state, $ionicModal, $localStorage, Services) {
+	// MODAL Login //
 	$ionicModal.fromTemplateUrl('templates/login.html', {
 		scope: $scope,
-		animation: 'slide-in-up' 
+		animation: 'slide-in-up' ,
+		hardwareBackButtonClose: false
 	}).then(function(modal) { $scope.modalLogin = modal; });
 
-	$scope.openModalLogin = function() {
-		$scope.modalLogin.show();
-	};
-
-	$scope.closeModalLogin = function() {
-		$scope.modalLogin.hide();
-	};
-
-	// if (kurma === false) {
-	// 	$scope.modalLogin.show();
-	// };
-
-	$ionicLoading.show({
-		template: '<ion-spinner icon="spiral" class="spinner-balanced"></ion-spinner>',
-		duration: 5000
+	$scope.$on('$ionicView.enter', function() {
+		Services.connectFirebase().then(function(result) {
+			if (result) {
+				// logged in, can access firebase
+				console.log('logged in');
+				$state.go('tabsController.order');
+			}
+		}, function(error) {
+			// cant access firebase, no access
+			$scope.modalLogin.show();
+		})
 	});
 
-	var kurir = "kurma";
-
-	$scope.getOrder = function() {
-		Services.getOrderQueue(kurir).then(function(orders) {
-			if (orders) {
-				$scope.orders = [];
-				for(var r in orders) {
-					Services.getOrderDetails(kurir, r).then(function(order) {
-						$scope.orders.push(order);
-
-						$ionicLoading.hide();
-					}, function(err) {
-						console.log(err);
-					});
-				}
-			}
-		}, function(reason) {
-			console.log('Error fetch data');
-			$ionicLoading.hide();
+	firebase.auth().onAuthStateChanged(function(user) {
+		if (user) {
+			$state.go('tabsController.order');
+		} else {
 			$scope.modalLogin.show();
-		});	
-	}
+		}
+	})
 
-	$scope.getOrder();
-
+	// define login variable
 	$scope.login = [];
-
+	
 	$scope.signIn = function() {
-		console.log($scope.login.email);
-		console.log($scope.login.password);
 		firebase.auth().signInWithEmailAndPassword($scope.login.email, $scope.login.password).then(function(result) {
-			var user = firebase.auth().currentUser;
-			console.log(user.email);
-			$scope.getOrder();
+			// should save email and username on localstorage
+			// clear login variable
+			$scope.login = [];
+
+			// go to order
+			$state.go('tabsController.order');
+
+			// hide modal login
 			$scope.modalLogin.hide()
 		}).catch(function(error) {
 			// Handle Errors here.
@@ -67,89 +49,259 @@ angular.module('app.controllers', [])
   			var errorMessage = error.message;
   			console.log(errorCode);
   			console.log(errorMessage);
-  			// ...
   		});
 	}
+})
+  
+.controller('orderCtrl', function ($scope, $stateParams, Services, $ionicLoading, $ionicModal, $state, $localStorage) {
+	// some code here
+	firebase.auth().onAuthStateChanged(function(user) {
+		if (user) {
+			$scope.getOrder(user.email);
+		} else {
+			$state.go('loginGate');
+		}
+	})
 
-	$scope.logout = function() {
-		firebase.auth().signOut().then(function() {
-			console.log('signed out');
-			$scope.modalLogin.show();
-		}, function(error) {
-			console.log(error);
-		});
+	// $scope.$on('$ionicView.enter', function() {
+	// 	var user = firebase.auth().currentUser;
+	// 	if (user) {
+	// 		$scope.getOrder(user.email);
+	// 	} else {
+	// 		$state.go('loginGate');
+	// 	}
+	// })
+
+	$ionicLoading.show({
+		template: '<ion-spinner icon="spiral" class="spinner-balanced"></ion-spinner>',
+		duration: 5000
+	});
+
+	$scope.getOrder = function(email) {
+		Services.getKurirData(email).then(function(kurir) {
+			if (kurir) {
+				Services.getOrderQueue(kurir.kurir).then(function(orders) {
+					if (orders) {
+						$scope.orders = [];
+						for(var r in orders) {
+							Services.getOrderDetails($scope.kurir.kurir, r).then(function(order) {
+								$scope.orders.push(order);
+
+								$ionicLoading.hide();
+							}, function(err) {
+								console.log(err);
+							});
+						}
+					}
+				}, function(reason) {
+					console.log('Error fetch data');
+					$ionicLoading.hide();
+					$state.go('loginGate');
+					// $scope.modalLogin.show();
+				});	
+			} else {
+				// no kurir
+			}
+		})
 	}
 })
    
-.controller('prosesCtrl', function ($scope, $stateParams, Services, $ionicLoading) {
-	// some code here
+.controller('prosesCtrl', function ($scope, $stateParams, Services, $ionicLoading, $localStorage) {
 	$ionicLoading.show({
 		template: '<ion-spinner icon="spiral" class="spinner-balanced"></ion-spinner>',
 		duration: 5000
 	})
 
-	var kurir = "kurma";
+	firebase.auth().onAuthStateChanged(function(user) {
+		if (user) {
+			$scope.getProcess(user.email);
+		} else {
+			$state.go('loginGate');
+		}
+	})
 
-	Services.getOrderProcess(kurir).then(function(orders) {
-		if (orders) {
-			$scope.orders = [];
-			for(var r in orders) {
-				Services.getOrderDetails(kurir, r).then(function(order) {
-					$scope.orders.push(order);
+	$scope.getProcess = function(email) {
+		Services.getKurirData(email).then(function(kurir) {
+			if (kurir) {
+				Services.getOrderProcess(kurir.kurir).then(function(orders) {
+					if (orders) {
+						$scope.orders = [];
+						for(var r in orders) {
+							Services.getOrderDetails(kurir.kurir, r).then(function(order) {
+								$scope.orders.push(order);
 
+								$ionicLoading.hide();
+							});
+						}
+					}
+				}, function(reason) {
+					console.log('Error fetch data');
 					$ionicLoading.hide();
 				});
+			} else {
+				// no kurir
 			}
-		}
-	}, function(reason) {
-		console.log('Error fetch data');
-		$ionicLoading.hide();
-	});
+		})
+	}
 })
    
 .controller('riwayatCtrl', function ($scope, $stateParams, Services, $ionicLoading) {
-	// some code here
 	$ionicLoading.show({
 		template: '<ion-spinner icon="spiral" class="spinner-balanced"></ion-spinner>',
 		duration: 5000
 	})
 
-	var kurir = "kurma";
+	firebase.auth().onAuthStateChanged(function(user) {
+		if (user) {
+			$scope.getHistory(user.email);
+		} else {
+			$state.go('loginGate');
+		}
+	})
 
-	Services.getOrderDone(kurir).then(function(orders) {
-		if (orders) {
-			$scope.orders = [];
-			for(var r in orders) {
-				Services.getOrderDetails(kurir, r).then(function(order) {
-					$scope.orders.push(order);
+	$scope.getHistory = function(email) {
+		Services.getKurirData(email).then(function(kurir) {
+			if (kurir) {
+				Services.getOrderDone(kurir.kurir).then(function(orders) {
+					if (orders) {
+						$scope.orders = [];
+						for(var r in orders) {
+							Services.getOrderDetails(kurir.kurir, r).then(function(order) {
+								$scope.orders.push(order);
 
+								$ionicLoading.hide();
+							});
+						}
+					}
+				}, function(reason) {
+					console.log('Error fetch data');
 					$ionicLoading.hide();
 				});
 			}
-		}
-	}, function(reason) {
-		console.log('Error fetch data');
-		$ionicLoading.hide();
-	});
-})
-
-.controller('transaksiCtrl', function ($scope, $stateParams) {
-	// some code here
-})
-   
-.controller('ditolakCtrl', function ($scope, $stateParams) {
-	// some code here
-})
- 
-.controller('loginCtrl', function ($scope, $stateParams, $state) {
-	// no code here
-	$scope.login = function() {
-		$state.go('tabsController.order');
+		})	
 	}
 })
 
-.controller('sideCtrl', function($scope, $stateParams, $state) {
-	$scope.logout = function() {
-		var login = false;
+.controller('transaksiCtrl', function ($scope, $stateParams, Services, $ionicLoading) {
+	$ionicLoading.show({
+		template: '<ion-spinner icon="spiral" class="spinner-balanced"></ion-spinner>',
+		duration: 5000
+	})
+
+	// firebase.auth().onAuthStateChanged(function(user) {
+	// 	if (user) {
+	// 		// $scope.getTransaksi(user.email);
+	// 		console.log(user.email);
+	// 	} else {
+	// 		$state.go('loginGate');
+	// 	}
+	// })
+
+	// // $scope.getTransaksi = function() {
+		var user = firebase.auth().currentUser;
+		if (!user) {
+			$state.go('loginGate');
+		}
+		Services.getKurirData(user.email).then(function(kurir) {
+			if (kurir) {
+				console.log($stateParams.index);
+				Services.getOrderDetails(kurir.kurir, $stateParams.index).then(function(order) {
+					if (order) {
+						$scope.order = order;
+						$ionicLoading.hide();
+					} else {
+						// no order
+						console.log('cant get transaksi, no order');
+					}
+				}, function(error) {
+					// error
+					console.log('cant get transaksi, error');
+				})
+			} else {
+				// nokurir
+				console.log('cant get transaksi, no kurir');
+			}
+		}, function(error) {
+			// error
+			console.log('cant get transaksi, error kurir');
+		})		
+	// // }
+})
+   
+.controller('ditolakCtrl', function ($scope, $stateParams, Services, $ionicLoading) {
+	$ionicLoading.show({
+		template: '<ion-spinner icon="spiral" class="spinner-balanced"></ion-spinner>',
+		duration: 5000
+	})
+
+	firebase.auth().onAuthStateChanged(function(user) {
+		if (user) {
+			$scope.getDitolak(user.email);
+		} else {
+			$state.go('loginGate');
+		}
+	})
+
+	$scope.getDitolak = function(email) {
+		Services.getKurirData(email).then(function(kurir) {
+			if (kurir) {
+				Services.getOrderCancel(kurir.kurir).then(function(orders) {
+					if (orders) {
+						$scope.orders = [];
+						for(var r in orders) {
+							Services.getOrderDetails(kurir.kurir, r).then(function(order) {
+								$scope.orders.push(order);
+
+								$ionicLoading.hide();
+							});
+						}
+					}
+				}, function(reason) {
+					console.log('Error fetch data');
+					$ionicLoading.hide();
+				});
+			}
+		})	
+	}
+})
+
+.controller('sideCtrl', function($scope, $stateParams, $state, Services, $localStorage) {
+	firebase.auth().onAuthStateChanged(function(user) {
+		if (user) {
+			Services.getKurirData(user.email).then(function(kurir) {
+				if (kurir) {
+					$scope.kurir = kurir;
+				} else {
+					console.log("error get data kurir");
+				}
+			})
+		} else {
+			console.log('no user');
+		}
+	})
+})
+
+.controller('profilCtrl', function($scope, $state, Services, $localStorage, $ionicModal) {
+	// profile code
+	var user = firebase.auth().currentUser;
+	if (user) {
+		Services.getKurirData(user.email).then(function(kurir) {
+			if (kurir) {
+				$scope.kurir = kurir;
+			} else {
+				console.log("error get data kurir");
+			}
+		}, function(err) {
+			$state.go('loginGate');
+		})
+	}
+
+	$scope.signOut = function() {
+		firebase.auth().signOut().then(function() {
+			console.log('signed out');
+			$state.go('loginGate');
+		}, function(error) {
+			console.log(error);
+		});
 	}
 })

@@ -45,12 +45,13 @@
     
     <!-- lib -->
     <script src="lib/ionicuirouter/ionicUIRouter.js"></script>
+    <script src="lib/ngstorage/ngStorage.min.js"></script>
 
   </head>
   <body ng-app="app" animation="slide-left-right-ios7">
   <div>
     <ion-side-menus enable-menu-with-back-views="true" data-componentid="side-menu21" ng-controller="sideCtrl">
-        <ion-side-menu-content>
+        <ion-side-menu-content drag-content="false">
             <ion-nav-bar class="bar-stable">
                 <ion-nav-back-button></ion-nav-back-button>
                 <ion-nav-buttons side="left">
@@ -63,21 +64,23 @@
             <ion-header-bar class="bar-stable">
                 <div class="title">Kurir</div>
             </ion-header-bar>
-            <ion-content padding="false" class="side-menu-left has-header">
+            <ion-content padding="false" class="side-menu-left has-header" scroll="false">
                 <ion-list id="kurir-list1" data-componentid="list1">
-                    <ion-item class="item-avatar assertive  " id="kurir-list-item1" data-componentid="list-item1">
-                        <h2assertive>Solo Kurir
-                            <p>Partner</p>
+                    <ion-item class="item-avatar assertive" id="kurir-list-item1" data-componentid="list-item1" ui-sref="profil" menu-close="">
+                        <img ng-src="{{kurir.photoUrl}}">
+                        <h2assertive>{{ kurir.nama }}
+                            <p>{{ kurir.kurir }}</p>
+                            <p>{{ kurir.email }}</p>
                         </h2assertive>
                     </ion-item>
                 </ion-list>
                 <ion-list id="kurir-list7" data-componentid="list7">
                     <ion-item id="kurir-list-item12" ui-sref="tabsController.order" menu-close="" data-componentid="list-item12">Transaksi</ion-item>
                     <ion-item id="kurir-list-item16" ui-sref="ditolak" menu-close="" data-componentid="list-item16">Ditolak</ion-item>
-                    <ion-item class="item-divider " id="kurir-list-item-divider3" data-componentid="list-item-divider3"></ion-item>
+                    <!-- <ion-item class="item-divider " id="kurir-list-item-divider3" data-componentid="list-item-divider3"></ion-item> -->
                 </ion-list>
                 <!-- <button id="kurir-button6" class=" button button-positive  button-full " data-componentid="button6">Keluar</button> -->
-                <a id="kurir-button6" class=" button button-positive  button-full " ng-click="logout()" menu-close="" data-componentid="button6">Keluar</a>
+                <!-- <a id="kurir-button6" class=" button button-positive  button-full " ng-click="logout()" menu-close="" data-componentid="button6">Keluar</a> -->
             </ion-content>
         </ion-side-menu>
     </ion-side-menus>
