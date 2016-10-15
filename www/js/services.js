@@ -91,6 +91,65 @@ angular.module('app.services', [])
 		);
 	}
 
+	// change status
+	this.changeStatus = function(status, kurir, index) {
+		var promise = $q.defer();
+
+		order.child(kurir +'/'+ index +'/status').set(status).then(function() {
+			promise.resolve(true);
+		});
+
+		return promise.promise;
+	}
+
+	// add new entri in proses list
+	this.newProcess = function(kurir, index) {
+		var promise = $q.defer();
+
+		status_process.child(kurir +'/'+ index).set({
+			'index': index
+		}).then(function() {
+			promise.resolve(true);
+		});
+
+		return promise.promise;
+	}
+
+	// add new entri di riwayat list
+	this.newDone = function(kurir, index) {
+		var promise = $q.defer();
+
+		status_done.child(kurir +'/'+ index).set({
+			'index': index
+		}).then(function() {
+			promise.resolve(true);
+		});
+
+		return promise.promise;
+	}
+
+	// delete entri in queue list
+	this.deleteQueue = function(kurir, index) {
+		var promise = $q.defer();
+
+		status_queue.child(kurir +'/'+ index).remove().then(function() {
+			promise.resolve(true);
+		});
+
+		return promise.promise;
+	}
+
+	// delete entri in process list
+	this.deleteProcess = function(kurir, index) {
+		var promise = $q.defer();
+
+		status_process.child(kurir +'/'+ index).remove().then(function() {
+			promise.resolve(true);
+		});
+
+		return promise.promise;
+	}
+
 	function promiseAdded(obj) {
 		var promise = $q.defer();
 

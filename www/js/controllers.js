@@ -182,7 +182,7 @@ angular.module('app.controllers', [])
 	}
 })
 
-.controller('transaksiCtrl', function ($scope, $stateParams, Services, $ionicLoading) {
+.controller('transaksiCtrl', function ($scope, $state, $stateParams, Services, $ionicLoading) {
 	$ionicLoading.show({
 		template: '<ion-spinner icon="spiral" class="spinner-balanced"></ion-spinner>',
 		duration: 5000
@@ -226,6 +226,30 @@ angular.module('app.controllers', [])
 			console.log('cant get transaksi, error kurir');
 		})		
 	// // }
+
+	$scope.changeStatus = function(status) {
+		// some code to change status
+		Services.getKurirData(user.email).then(function(kurir) {
+			if (kurir) {
+				Services.changeStatus(status, kurir.kurir, $scope.order.index);
+				if (status === 'process') {
+					Services.newProcess(kurir.kurir, $scope.order.index);
+					Services.deleteQueue(kurir.kurir, $scope.order.index);
+					$state.go('tabsController.proses');
+					// add to process
+				} else if (status === 'done') {
+					Services.newDone(kurir.kurir, $scope.order.index);
+					Services.deleteProcess(kurir.kurir, $scope.order.index);
+					$state.go('tabsController.riwayat');
+					// add to done
+				} else if (status === 'cancel') {
+					// add to cancel
+				}
+			} else {
+				console.log('error no kurir');
+			}
+		})
+	}
 })
    
 .controller('ditolakCtrl', function ($scope, $stateParams, Services, $ionicLoading) {
