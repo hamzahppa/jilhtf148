@@ -1,6 +1,6 @@
 angular.module('app.controllers', [])
  
-.controller('loginGateCtrl', function ($scope, $stateParams, $state, $ionicModal, $localStorage, Services) {
+.controller('loginGateCtrl', function ($scope, $stateParams, $state, $ionicModal, $localStorage, Services, $ionicLoading) {
 	// MODAL Login //
 	$ionicModal.fromTemplateUrl('templates/login.html', {
 		scope: $scope,
@@ -13,7 +13,6 @@ angular.module('app.controllers', [])
 			if (result) {
 				// logged in, can access firebase
 				console.log('logged in');
-				$state.go('tabsController.order');
 			}
 		}, function(error) {
 			// cant access firebase, no access
@@ -32,17 +31,18 @@ angular.module('app.controllers', [])
 	// define login variable
 	$scope.login = [];
 	
-	$scope.signIn = function() {
+	$scope.signIn = function() {		
+		$ionicLoading.show({
+			template: '<ion-spinner icon="spiral" class="spinner-balanced"></ion-spinner>'
+		});
+
 		firebase.auth().signInWithEmailAndPassword($scope.login.email, $scope.login.password).then(function(result) {
-			// should save email and username on localstorage
+			// hide modal login
+			$scope.modalLogin.hide();
+			// hide login
+			$ionicLoading.hide();
 			// clear login variable
 			$scope.login = [];
-
-			// go to order
-			$state.go('tabsController.order');
-
-			// hide modal login
-			$scope.modalLogin.hide()
 		}).catch(function(error) {
 			// Handle Errors here.
   			var errorCode = error.code;
@@ -82,15 +82,21 @@ angular.module('app.controllers', [])
 			if (kurir) {
 				Services.getOrderQueue(kurir.kurir).then(function(orders) {
 					if (orders) {
-						$scope.orders = [];
-						for(var r in orders) {
-							Services.getOrderDetails($scope.kurir.kurir, r).then(function(order) {
-								$scope.orders.push(order);
-
-								$ionicLoading.hide();
-							}, function(err) {
-								console.log(err);
-							});
+						if ($scope.orders) {
+							// not doing cuz data already loaded
+							// must refresh data lulz
+							console.log('already loaded');
+						} else {
+							$scope.orders = [];
+							for(var r in orders) {
+								Services.getOrderDetails(kurir.kurir, r).then(function(order) {
+									$scope.orders.push(order);
+									
+									$ionicLoading.hide();
+								}, function(err) {
+									console.log(err);
+								});
+							}
 						}
 					}
 				}, function(reason) {
@@ -182,7 +188,7 @@ angular.module('app.controllers', [])
 	}
 })
 
-.controller('transaksiCtrl', function ($scope, $state, $stateParams, Services, $ionicLoading) {
+.controller('transaksiCtrl', function ($scope, $state, $stateParams, Services, $ionicLoading, $cordovaGeolocation) {
 	$ionicLoading.show({
 		template: '<ion-spinner icon="spiral" class="spinner-balanced"></ion-spinner>',
 		duration: 5000
@@ -204,11 +210,20 @@ angular.module('app.controllers', [])
 		}
 		Services.getKurirData(user.email).then(function(kurir) {
 			if (kurir) {
-				console.log($stateParams.index);
 				Services.getOrderDetails(kurir.kurir, $stateParams.index).then(function(order) {
 					if (order) {
 						$scope.order = order;
-						$ionicLoading.hide();
+						// $scope.menus = [];
+						// for(var id in order.pesanan) {
+						// 	// get detail for each menu
+						// 	Services.getMenuDetails(order.indexResto, order.pesanan[id].indexMenu).then(function(menu) {
+						// 		$scope.menus.push(menu);
+								
+						// 		$ionicLoading.hide();
+						// 	}, function(err) {
+						// 		console.log(err);
+						// 	});
+						// }
 					} else {
 						// no order
 						console.log('cant get transaksi, no order');
@@ -231,15 +246,15 @@ angular.module('app.controllers', [])
 		// some code to change status
 		Services.getKurirData(user.email).then(function(kurir) {
 			if (kurir) {
-				Services.changeStatus(status, kurir.kurir, $scope.order.index);
+				Services.changeStatus(status, kurir.kurir, $scope.order.indexTransaksi);
 				if (status === 'process') {
-					Services.newProcess(kurir.kurir, $scope.order.index);
-					Services.deleteQueue(kurir.kurir, $scope.order.index);
+					Services.newProcess(kurir.kurir, $scope.order.indexTransaksi);
+					Services.deleteQueue(kurir.kurir, $scope.order.indexTransaksi);
 					$state.go('tabsController.proses');
 					// add to process
 				} else if (status === 'done') {
-					Services.newDone(kurir.kurir, $scope.order.index);
-					Services.deleteProcess(kurir.kurir, $scope.order.index);
+					Services.newDone(kurir.kurir, $scope.order.indexTransaksi);
+					Services.deleteProcess(kurir.kurir, $scope.order.indexTransaksi);
 					$state.go('tabsController.riwayat');
 					// add to done
 				} else if (status === 'cancel') {
@@ -249,6 +264,33 @@ angular.module('app.controllers', [])
 				console.log('error no kurir');
 			}
 		})
+	}
+
+	$scope.openMap = function(dlat, dlong) {
+		$ionicLoading.show({
+			template: '<ion-spinner icon="spiral" class="spinner-balanced"></ion-spinner>',
+			duration: 5000
+		})
+		console.log(dlat, dlong);
+		var options = {timeout: 3000, enableHighAccuracy: true};
+		$cordovaGeolocation.getCurrentPosition(options).then(function(position){
+			var lat = position.coords.latitude;
+			var lng = position.coords.longitude;
+			window.open('http://maps.google.com/maps?saddr=+'+lat+'+,+'+lng+'+&daddr=+'+dlat+'+,+'+dlong+'+&dirflg=d', '_system', 'location=yes');
+			// window.open('geo:'+lat+','+lng+'?q='+restoLat+','+restoLng+'('+restoran.namaResto+')', '_system', 'location=yes');
+			$ionicLoading.hide();
+			return false;
+		}, function(error){
+			console.log("Could not get location");
+			window.open('http://maps.google.com/maps?saddr=Current+Location&daddr=+'+dlat+'+,+'+dlong+'+&dirflg=d', '_system', 'location=yes');
+			$ionicLoading.hide();
+			// $ionicPopup.alert({
+			// 	title: 'Error',
+			// 	template: 'Tidak dapat menggunakan GPS, hidupkan setting GPS anda',
+			// 	okText: 'OK',
+			// 	okType: 'button-balanced'
+			// });
+		});
 	}
 })
    

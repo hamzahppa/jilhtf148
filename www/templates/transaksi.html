@@ -1,37 +1,62 @@
 <ion-view title="Transaksi" id="page6">
     <ion-content padding="true" class="has-header">
         <div>
-            <img src="img/pE5n7nawSgiuc1CEkpj2_people_icon.jpg" width="20%" height="auto" style="display: block; margin-left: auto; margin-right: auto;">
+            <img ng-src="{{order.userPhotoUrl}}" width="40%" height="auto" style="border-radius:50%; border:1px solid gray; display: block; margin-left: auto; margin-right: auto; margin-top: 10px; margin-bottom: 10px;">
         </div>
+        <center><h2>{{order.namaUser}}</h2></center>
         <h1 id="transaksi-heading2" style="color:#000000;">{{order.index}}</h1>
         <form id="transaksi-form2" class="list ">
-            <label class="item item-input " id="transaksi-input3">
+<!--             <label class="item item-input " id="transaksi-input3">
                 <span class="input-label">Nama</span>
-                <input type="text" value="{{order.nama}}" readonly="true">
-            </label>
-            <label class="item item-input " id="transaksi-input4">
-                <span class="input-label">Nominal</span>
-                <input type="text" value="{{order.totalharga}}" readonly="true">
+                <input type="text" value="{{order.namaUser}}" readonly="true">
             </label>
             <label class="item item-input " id="transaksi-textarea1">
-                <span class="input-label">Alamat</span><textarea readonly="true">{{order.alamat}}</textarea>
+                <span class="input-label">Alamat</span><textarea readonly="true">{{order.alamatUser}}</textarea>
             </label>
             <label class="item item-input " id="transaksi-input5">
                 <span class="input-label">Restoran</span>
                 <input type="text" value="{{order.namaResto}}" readonly="true">
-            </label>
-            <ion-item class="item-avatar  " id="transaksi-list-item15">
+            </label> -->
+            <a class="item item-icon-left" ng-click="openMap(order.mapUser.lat, order.mapUser.long)">
+                <i class="icon ion-ios-location-outline"></i>
+                <p>Alamat Kirim</p>
+                {{order.alamatUser}}
+            </a>
+            <a class="item item-icon-left" ng-click="openMap(order.map.lat, order.map.long)">
+                <i class="icon ion-ios-location-outline"></i>
+                <p>Resto</p>
+                {{order.namaResto}}
+            </a>
+            <a class="item item-icon-left" href="tel:{{order.noTelpUser}}">
+                <i class="icon ion-ios-telephone-outline"></i>
+                <p>Kontak</p>
+                {{order.noTelpUser}}
+            </a>
+<!--             <a class="item item-avatar" id="transaksi-list-item15" href="">
+                <img ng-src="">
                 <h2>Kontak</h2>
-                <p>{{order.notelp}}</p>
-            </ion-item>
+                <p>{{order.noTelpUser}}</p>
+            </a> -->
             <ion-item class="item-divider " id="transaksi-list-item-divider1">Menu</ion-item>
             <ion-list>
-                <ion-item class="item-thumbnail-left" id="transaksi-list-item13" ng-repeat="menu in order.pesanan">
-                    <h2>{{menu.indexmenu}}</h2>
-                    <p>{{menu.jumlah}}</p>
-                    <p>{{menu.total}}</p>
+                <ion-item class="item" ng-repeat="menu in order.pesanan">
+                    <h2>{{menu.namaMenu}}</h2>
+                    <p>Jumlah : {{menu.jumlah}}</p>
+                    <p>Total Harga : {{menu.total}}</p>
                 </ion-item>
             </ion-list>
+            <label class="item item-input " id="transaksi-input4">
+                <span class="input-label">Transaksi</span>
+                <input type="number" ng-model="order.jumlah" readonly="true">
+            </label>
+            <label class="item item-input " id="transaksi-input5">
+                <span class="input-label">Ongkos Kirim</span>
+                <input type="number" ng-model="order.feedelivery">
+            </label>
+            <label class="item item-input " id="transaksi-input4">
+                <span class="input-label">Total</span>
+                <input type="text" value="{{order.jumlah + order.feedelivery}}" readonly="true">
+            </label>
             <button ng-show="order.status == 'queue'" id="transaksi-button3" class=" button button-balanced  button-block " ng-click="changeStatus('process')">Proses</button>
             <button ng-show="order.status == 'process'" id="transaksi-button4" class=" button button-energized  button-block " ng-click="changeStatus('done')">Selesai</button>
             <button ng-show="order.status == 'queue'" id="transaksi-button5" class=" button button-assertive  button-block " ng-click="changeStatus('cancel')">Tolak</button>

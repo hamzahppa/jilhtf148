@@ -8,13 +8,15 @@ var config = {
 firebase.initializeApp(config);
 
 var rootRef = firebase.database().ref();
-var order = firebase.database().ref('dataOrder');
-var status = firebase.database().ref('statusOrder');
-var status_queue = firebase.database().ref('statusOrder').child('queue');
-var status_process = firebase.database().ref('statusOrder').child('process');
-var status_done = firebase.database().ref('statusOrder').child('done');
-var status_cancel = firebase.database().ref('statusOrder').child('cancel');
-var kurir = firebase.database().ref('dataKurir');
+var order = firebase.database().ref('transaksi');
+var status = firebase.database().ref('status');
+var status_queue = firebase.database().ref('status').child('queue');
+var status_process = firebase.database().ref('status').child('process');
+var status_done = firebase.database().ref('status').child('done');
+var status_cancel = firebase.database().ref('status').child('cancel');
+var kurir = firebase.database().ref('kurir');
+var menu = firebase.database().ref('dataMenu');
+var user = firebase.database().ref('user');
 
 angular.module('app.services', [])
 
@@ -87,7 +89,20 @@ angular.module('app.services', [])
 	// get order detail
 	this.getOrderDetails = function(kurir, index) {
 		return promiseAdded(
-			order.child(kurir).orderByChild('index').equalTo(index)
+			order.child(kurir).orderByChild('indexTransaksi').equalTo(index)
+		);
+	}
+
+	// get Menu detail
+	this.getMenuDetails = function(idResto, idMenu) {
+		return promiseAdded(
+			menu.child(idResto).orderByChild('indexmenu').equalTo(idMenu)
+		);
+	}
+
+	this.getUserDetails = function(username) {
+		return promiseAdded(
+			user.orderByChild('username').equalTo(username)
 		);
 	}
 
