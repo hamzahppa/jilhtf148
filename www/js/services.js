@@ -117,6 +117,42 @@ angular.module('app.services', [])
 		return promise.promise;
 	}
 
+	// update feedelivery and total
+	this.updateFee = function(feedelivery, total, kurir, index) {
+		var promise = $q.defer();
+
+		order.child(kurir +'/'+ index).update({
+			'feedelivery': feedelivery,
+			'totalHarga': total
+		}).then(function() {
+			promise.resolve(true);
+		});
+
+		return promise.promise;
+	}
+
+	// update ongkir only
+	this.setNewOngkir = function(feedelivery, kurir, index) {
+		var promise = $q.defer();
+
+		order.child(kurir +'/'+ index +'/feedelivery').set(feedelivery).then(function() {
+			promise.resolve(true);
+		});
+
+		return promise.promise;
+	}
+
+	// update totalHarga only
+	this.setNewTotal = function(total, kurir, index) {
+		var promise = $q.defer();
+
+		order.child(kurir +'/'+ index +'/totalHarga').set(total).then(function() {
+			promise.resolve(true);
+		});
+
+		return promise.promise;
+	}
+
 	// add new entri in proses list
 	this.newProcess = function(kurir, index) {
 		var promise = $q.defer();
@@ -135,6 +171,19 @@ angular.module('app.services', [])
 		var promise = $q.defer();
 
 		status_done.child(kurir +'/'+ index).set({
+			'index': index
+		}).then(function() {
+			promise.resolve(true);
+		});
+
+		return promise.promise;
+	}
+
+	// add new entri di list ditolak
+	this.newCancel = function(kurir, index) {
+		var promise = $q.defer();
+
+		status_cancel.child(kurir +'/'+ index).set({
 			'index': index
 		}).then(function() {
 			promise.resolve(true);

@@ -53,18 +53,9 @@ angular.module('app.controllers', [])
 	}
 })
   
-.controller('orderCtrl', function ($scope, $stateParams, Services, $ionicLoading, $ionicModal, $state, $localStorage) {
+.controller('orderCtrl', function ($scope, $stateParams, Services, $ionicLoading, $ionicModal, $state, $localStorage, $ionicHistory) {
 	// some code here
-	firebase.auth().onAuthStateChanged(function(user) {
-		if (user) {
-			$scope.getOrder(user.email);
-		} else {
-			$state.go('loginGate');
-		}
-	})
-
-	// $scope.$on('$ionicView.enter', function() {
-	// 	var user = firebase.auth().currentUser;
+	// firebase.auth().onAuthStateChanged(function(user) {
 	// 	if (user) {
 	// 		$scope.getOrder(user.email);
 	// 	} else {
@@ -72,32 +63,39 @@ angular.module('app.controllers', [])
 	// 	}
 	// })
 
-	$ionicLoading.show({
-		template: '<ion-spinner icon="spiral" class="spinner-balanced"></ion-spinner>',
-		duration: 5000
-	});
+	$scope.$on('$ionicView.enter', function() {
+		$ionicHistory.clearHistory();
+		var user = firebase.auth().currentUser;
+		if (user) {
+			$scope.getOrder(user.email);
+		} else {
+			$state.go('loginGate');
+		}
+	})
 
 	$scope.getOrder = function(email) {
+		$ionicLoading.show({
+			template: '<ion-spinner icon="spiral" class="spinner-balanced"></ion-spinner>',
+			duration: 5000
+		});
 		Services.getKurirData(email).then(function(kurir) {
 			if (kurir) {
 				Services.getOrderQueue(kurir.kurir).then(function(orders) {
 					if (orders) {
-						if ($scope.orders) {
-							// not doing cuz data already loaded
-							// must refresh data lulz
-							console.log('already loaded');
-						} else {
-							$scope.orders = [];
-							for(var r in orders) {
-								Services.getOrderDetails(kurir.kurir, r).then(function(order) {
-									$scope.orders.push(order);
-									
-									$ionicLoading.hide();
-								}, function(err) {
-									console.log(err);
-								});
-							}
+						$scope.orders = [];
+						console.log('create orders');
+						for(var r in orders) {
+							Services.getOrderDetails(kurir.kurir, r).then(function(order) {
+								$scope.orders.push(order);
+								
+								$ionicLoading.hide();
+							}, function(err) {
+								console.log(err);
+							});
 						}
+					} else {
+						$scope.orders = [];
+						$ionicLoading.hide();
 					}
 				}, function(reason) {
 					console.log('Error fetch data');
@@ -112,13 +110,10 @@ angular.module('app.controllers', [])
 	}
 })
    
-.controller('prosesCtrl', function ($scope, $stateParams, Services, $ionicLoading, $localStorage) {
-	$ionicLoading.show({
-		template: '<ion-spinner icon="spiral" class="spinner-balanced"></ion-spinner>',
-		duration: 5000
-	})
-
-	firebase.auth().onAuthStateChanged(function(user) {
+.controller('prosesCtrl', function ($scope, $stateParams, Services, $ionicLoading, $localStorage, $ionicHistory) {
+	$scope.$on('$ionicView.enter', function() {
+		$ionicHistory.clearHistory();
+		var user = firebase.auth().currentUser;
 		if (user) {
 			$scope.getProcess(user.email);
 		} else {
@@ -126,7 +121,19 @@ angular.module('app.controllers', [])
 		}
 	})
 
+	// firebase.auth().onAuthStateChanged(function(user) {
+	// 	if (user) {
+	// 		$scope.getProcess(user.email);
+	// 	} else {
+	// 		$state.go('loginGate');
+	// 	}
+	// })
+
 	$scope.getProcess = function(email) {
+		$ionicLoading.show({
+			template: '<ion-spinner icon="spiral" class="spinner-balanced"></ion-spinner>',
+			duration: 5000
+		})
 		Services.getKurirData(email).then(function(kurir) {
 			if (kurir) {
 				Services.getOrderProcess(kurir.kurir).then(function(orders) {
@@ -139,6 +146,9 @@ angular.module('app.controllers', [])
 								$ionicLoading.hide();
 							});
 						}
+					} else {
+						$scope.orders = [];
+						$ionicLoading.hide();
 					}
 				}, function(reason) {
 					console.log('Error fetch data');
@@ -151,21 +161,30 @@ angular.module('app.controllers', [])
 	}
 })
    
-.controller('riwayatCtrl', function ($scope, $stateParams, Services, $ionicLoading) {
-	$ionicLoading.show({
-		template: '<ion-spinner icon="spiral" class="spinner-balanced"></ion-spinner>',
-		duration: 5000
-	})
-
-	firebase.auth().onAuthStateChanged(function(user) {
+.controller('riwayatCtrl', function ($scope, $stateParams, Services, $ionicLoading, $ionicHistory) {
+	$scope.$on('$ionicView.enter', function() {
+		$ionicHistory.clearHistory();
+		var user = firebase.auth().currentUser;
 		if (user) {
 			$scope.getHistory(user.email);
 		} else {
 			$state.go('loginGate');
 		}
-	})
+	});
+
+	// firebase.auth().onAuthStateChanged(function(user) {
+	// 	if (user) {
+	// 		$scope.getHistory(user.email);
+	// 	} else {
+	// 		$state.go('loginGate');
+	// 	}
+	// })
 
 	$scope.getHistory = function(email) {
+		$ionicLoading.show({
+			template: '<ion-spinner icon="spiral" class="spinner-balanced"></ion-spinner>',
+			duration: 5000
+		});
 		Services.getKurirData(email).then(function(kurir) {
 			if (kurir) {
 				Services.getOrderDone(kurir.kurir).then(function(orders) {
@@ -178,6 +197,9 @@ angular.module('app.controllers', [])
 								$ionicLoading.hide();
 							});
 						}
+					} else {
+						$scope.orders = [];
+						$ionicLoading.hide();
 					}
 				}, function(reason) {
 					console.log('Error fetch data');
@@ -188,7 +210,7 @@ angular.module('app.controllers', [])
 	}
 })
 
-.controller('transaksiCtrl', function ($scope, $state, $stateParams, Services, $ionicLoading, $cordovaGeolocation) {
+.controller('transaksiCtrl', function ($scope, $state, $stateParams, Services, $ionicLoading, $cordovaGeolocation, $ionicHistory) {
 	$ionicLoading.show({
 		template: '<ion-spinner icon="spiral" class="spinner-balanced"></ion-spinner>',
 		duration: 5000
@@ -224,6 +246,7 @@ angular.module('app.controllers', [])
 						// 		console.log(err);
 						// 	});
 						// }
+						$ionicLoading.hide();
 					} else {
 						// no order
 						console.log('cant get transaksi, no order');
@@ -243,23 +266,56 @@ angular.module('app.controllers', [])
 	// // }
 
 	$scope.changeStatus = function(status) {
+		$ionicLoading.show({
+			template: '<ion-spinner icon="spiral" class="spinner-balanced"></ion-spinner>',
+			duration: 5000
+		})
 		// some code to change status
 		Services.getKurirData(user.email).then(function(kurir) {
 			if (kurir) {
-				Services.changeStatus(status, kurir.kurir, $scope.order.indexTransaksi);
-				if (status === 'process') {
-					Services.newProcess(kurir.kurir, $scope.order.indexTransaksi);
-					Services.deleteQueue(kurir.kurir, $scope.order.indexTransaksi);
-					$state.go('tabsController.proses');
-					// add to process
-				} else if (status === 'done') {
-					Services.newDone(kurir.kurir, $scope.order.indexTransaksi);
-					Services.deleteProcess(kurir.kurir, $scope.order.indexTransaksi);
-					$state.go('tabsController.riwayat');
-					// add to done
-				} else if (status === 'cancel') {
-					// add to cancel
-				}
+				Services.changeStatus(status, kurir.kurir, $scope.order.indexTransaksi).then(function() {
+					if (status === 'process') {
+						Services.newProcess(kurir.kurir, $scope.order.indexTransaksi).then(function() {
+							// Services.setNewOngkir($scope.order.feedelivery, kurir.kurir, $scope.order.indexTransaksi);
+							// Services.setNewTotal($scope.order.jumlah+$scope.order.feedelivery, kurir.kurir, $scope.order.indexTransaksi);
+							Services.updateFee($scope.order.feedelivery, $scope.order.jumlah+$scope.order.feedelivery, kurir.kurir, $scope.order.indexTransaksi).then(function() {
+								Services.deleteQueue(kurir.kurir, $scope.order.indexTransaksi).then(function() {
+									$state.go('tabsController.proses');
+									$ionicLoading.hide();
+								}, function(err) {
+									// should be a callback
+									console.log('error delete queue : '+err);
+								});
+							}, function(err) {
+								// should be a callback
+								console.log('err updateFee : '+err);
+							});
+						}, function(err) {
+							// should be a callback
+							console.log('error create new process : '+err);
+						});
+					} else if (status === 'done') {
+						Services.newDone(kurir.kurir, $scope.order.indexTransaksi).then(function() {
+							Services.deleteProcess(kurir.kurir, $scope.order.indexTransaksi).then(function() {
+								$state.go('tabsController.riwayat');
+							});
+						});
+					} else if (status === 'cancel') {
+						Services.newCancel(kurir.kurir, $scope.order.indexTransaksi).then(function() {
+							Services.deleteQueue(kurir.kurir, $scope.order.indexTransaksi).then(function() {
+								console.log('order cancel');
+								alert('order dicancel');
+								$ionicHistory.goBack();
+							}, function(err) {
+								console.log(err);
+							})
+						}, function(err) {
+							console.log(err);
+						});
+					}
+				}, function(err) {
+					console.log('error change status : '+err);
+				});
 			} else {
 				console.log('error no kurir');
 			}
@@ -295,10 +351,6 @@ angular.module('app.controllers', [])
 })
    
 .controller('ditolakCtrl', function ($scope, $stateParams, Services, $ionicLoading) {
-	$ionicLoading.show({
-		template: '<ion-spinner icon="spiral" class="spinner-balanced"></ion-spinner>',
-		duration: 5000
-	})
 
 	firebase.auth().onAuthStateChanged(function(user) {
 		if (user) {
@@ -309,6 +361,10 @@ angular.module('app.controllers', [])
 	})
 
 	$scope.getDitolak = function(email) {
+		$ionicLoading.show({
+			template: '<ion-spinner icon="spiral" class="spinner-balanced"></ion-spinner>',
+			duration: 5000
+		})
 		Services.getKurirData(email).then(function(kurir) {
 			if (kurir) {
 				Services.getOrderCancel(kurir.kurir).then(function(orders) {
@@ -321,6 +377,9 @@ angular.module('app.controllers', [])
 								$ionicLoading.hide();
 							});
 						}
+					} else {
+						$scope.orders = [];
+						$ionicLoading.hide();
 					}
 				}, function(reason) {
 					console.log('Error fetch data');
