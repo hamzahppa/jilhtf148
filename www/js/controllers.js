@@ -22,6 +22,19 @@ angular.module('app.controllers', [])
 
 	firebase.auth().onAuthStateChanged(function(user) {
 		if (user) {
+			console.log(user.email);
+			// get Kurir Detail
+			Services.getKurirData(user.email).then(function(kurir) {
+				if (kurir) {
+					// subsribe to topic kurir on cloud messaging
+					window.FirebasePlugin.subscribe(kurir.kurir);
+					console.log('subsribe to : '+kurir.kurir);
+				} else {
+					console.log('no kurir');
+				}
+			}, function(err) {
+				console.log('error get kurir : '+err);
+			})
 			$state.go('tabsController.order');
 		} else {
 			$scope.modalLogin.show();
@@ -74,6 +87,8 @@ angular.module('app.controllers', [])
 	})
 
 	$scope.getOrder = function(email) {
+		window.FirebasePlugin.logEvent("View", {page: "List Order"});
+		console.log('View List Order');
 		$ionicLoading.show({
 			template: '<ion-spinner icon="spiral" class="spinner-balanced"></ion-spinner>',
 			duration: 5000
@@ -136,7 +151,7 @@ angular.module('app.controllers', [])
 		})
 		Services.getKurirData(email).then(function(kurir) {
 			if (kurir) {
-				Services.getOrderProcess(kurir.kurir).then(function(orders) {
+				Services.getOrderProcess(kurir.kurir, kurir.index).then(function(orders) {
 					if (orders) {
 						$scope.orders = [];
 						for(var r in orders) {
@@ -187,7 +202,7 @@ angular.module('app.controllers', [])
 		});
 		Services.getKurirData(email).then(function(kurir) {
 			if (kurir) {
-				Services.getOrderDone(kurir.kurir).then(function(orders) {
+				Services.getOrderDone(kurir.kurir, kurir.index).then(function(orders) {
 					if (orders) {
 						$scope.orders = [];
 						for(var r in orders) {
@@ -210,7 +225,7 @@ angular.module('app.controllers', [])
 	}
 })
 
-.controller('transaksiCtrl', function ($scope, $state, $stateParams, Services, $ionicLoading, $cordovaGeolocation, $ionicHistory) {
+.controller('transaksiCtrl', function ($scope, $state, $stateParams, Services, $ionicLoading, $cordovaGeolocation, $ionicHistory, $http, GoogleMaps) {
 	$ionicLoading.show({
 		template: '<ion-spinner icon="spiral" class="spinner-balanced"></ion-spinner>',
 		duration: 5000
@@ -235,6 +250,24 @@ angular.module('app.controllers', [])
 				Services.getOrderDetails(kurir.kurir, $stateParams.index).then(function(order) {
 					if (order) {
 						$scope.order = order;
+						// get distance
+						var oLat = order.map.lat;
+						var oLong = order.map.long;
+						var dLat = order.mapUser.lat;
+						var dLong = order.mapUser.long;
+						var url = 'https://maps.googleapis.com/maps/api/distancematrix/';
+						var type = 'json';
+						var key = 'AIzaSyDcTH7G919_ydCKS_wvqoCkyH9lFMDvhgQ';
+						$http.get(url+type+'?origins='+oLat+','+oLong+'&destinations='+dLat+','+dLong+'&key='+key).success(function(result) {
+							console.log('data success');
+							$scope.distance = result.rows[0].elements[0].distance.text;
+							$scope.distanceInMeter = result.rows[0].elements[0].distance.value;
+							$scope.duration = result.rows[0].elements[0].duration.text;
+							$scope.durationInSecond = result.rows[0].elements[0].duration.value;
+						}).error(function(error) {
+							console.log('data error : '+error);
+						});
+
 						// $scope.menus = [];
 						// for(var id in order.pesanan) {
 						// 	// get detail for each menu
@@ -275,7 +308,7 @@ angular.module('app.controllers', [])
 			if (kurir) {
 				Services.changeStatus(status, kurir.kurir, $scope.order.indexTransaksi).then(function() {
 					if (status === 'process') {
-						Services.newProcess(kurir.kurir, $scope.order.indexTransaksi).then(function() {
+						Services.newProcess(kurir.kurir, $scope.order.indexTransaksi, kurir.index).then(function() {
 							// Services.setNewOngkir($scope.order.feedelivery, kurir.kurir, $scope.order.indexTransaksi);
 							// Services.setNewTotal($scope.order.jumlah+$scope.order.feedelivery, kurir.kurir, $scope.order.indexTransaksi);
 							Services.updateFee($scope.order.feedelivery, $scope.order.jumlah+$scope.order.feedelivery, kurir.kurir, $scope.order.indexTransaksi).then(function() {
@@ -295,13 +328,13 @@ angular.module('app.controllers', [])
 							console.log('error create new process : '+err);
 						});
 					} else if (status === 'done') {
-						Services.newDone(kurir.kurir, $scope.order.indexTransaksi).then(function() {
-							Services.deleteProcess(kurir.kurir, $scope.order.indexTransaksi).then(function() {
+						Services.newDone(kurir.kurir, $scope.order.indexTransaksi, kurir.index).then(function() {
+							Services.deleteProcess(kurir.kurir, $scope.order.indexTransaksi, kurir.index).then(function() {
 								$state.go('tabsController.riwayat');
 							});
 						});
 					} else if (status === 'cancel') {
-						Services.newCancel(kurir.kurir, $scope.order.indexTransaksi).then(function() {
+						Services.newCancel(kurir.kurir, $scope.order.indexTransaksi, kurir.index).then(function() {
 							Services.deleteQueue(kurir.kurir, $scope.order.indexTransaksi).then(function() {
 								console.log('order cancel');
 								alert('order dicancel');
@@ -410,6 +443,7 @@ angular.module('app.controllers', [])
 	// profile code
 	var user = firebase.auth().currentUser;
 	if (user) {
+		console.log(user);
 		Services.getKurirData(user.email).then(function(kurir) {
 			if (kurir) {
 				$scope.kurir = kurir;
@@ -419,9 +453,13 @@ angular.module('app.controllers', [])
 		}, function(err) {
 			$state.go('loginGate');
 		})
+	} else {
+		console.log('error');
 	}
 
 	$scope.signOut = function() {
+		window.FirebasePlugin.unsubscribe($scope.kurir.kurir);
+		console.log('unsubscribe from '+$scope.kurir.kurir);
 		firebase.auth().signOut().then(function() {
 			console.log('signed out');
 			$state.go('loginGate');

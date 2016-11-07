@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "276003012685",
+    "firebase_url": "https://sandbox-mangan.firebaseio.com",
+    "project_id": "sandbox-mangan",
+    "storage_bucket": "sandbox-mangan.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:276003012685:android:0821bf650dc20c91",
+        "android_client_info": {
+          "package_name": "com.manganindonesia.kurma"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "276003012685-p5g0oooc6866po2se0d4ov8a04uncf4u.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDcTH7G919_ydCKS_wvqoCkyH9lFMDvhgQ"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

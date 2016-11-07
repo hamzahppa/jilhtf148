@@ -20,11 +20,24 @@ var user = firebase.database().ref('user');
 
 angular.module('app.services', [])
 
-.factory('BlankFactory', [function(){
+.factory('GoogleMaps', function($http){
+	var url = "https://maps.googleapis.com/maps/api/distancematrix/";
+	var type = "json";
+	var key = 'AIzaSyDcTH7G919_ydCKS_wvqoCkyH9lFMDvhgQ';
+	return {
+		distance: function() {
+			console.log('call get');
+			return $http.get('https://maps.googleapis.com/maps/api/distancematrix/json?origins=-7.5582992,110.8570153&destinations=-7.555757,110.847021&key=AIzaSyDcTH7G919_ydCKS_wvqoCkyH9lFMDvhgQ', {
+				headers: {
+					'Access-Control-Allow-Origin': '*',
+					'Content-Type': 'application/json; charset=UTF-8;'
+				}
+			})
+		}
+	}
+})
 
-}])
-
-.service('Services', function($q, $localStorage) {
+.service('Services', function($q, $localStorage, $http) {
 	localStorage
 	$localStorage = $localStorage.$default({
 		email : null,
@@ -66,16 +79,16 @@ angular.module('app.services', [])
 	}
 
 	// get status process
-	this.getOrderProcess = function(kurir) {
+	this.getOrderProcess = function(kurir, akunkurir) {
 		return promiseValue(
-			status_process.child(kurir)
+			status_process.child(kurir +'/'+ akunkurir)
 		);
 	}
 
 	// get status done
-	this.getOrderDone = function(kurir) {
+	this.getOrderDone = function(kurir, akunkurir) {
 		return promiseValue(
-			status_done.child(kurir)
+			status_done.child(kurir +'/'+ akunkurir)
 		);
 	}
 
@@ -154,10 +167,10 @@ angular.module('app.services', [])
 	}
 
 	// add new entri in proses list
-	this.newProcess = function(kurir, index) {
+	this.newProcess = function(kurir, index, akunkurir) {
 		var promise = $q.defer();
 
-		status_process.child(kurir +'/'+ index).set({
+		status_process.child(kurir +'/'+ akunkurir +'/'+ index).set({
 			'index': index
 		}).then(function() {
 			promise.resolve(true);
@@ -167,10 +180,10 @@ angular.module('app.services', [])
 	}
 
 	// add new entri di riwayat list
-	this.newDone = function(kurir, index) {
+	this.newDone = function(kurir, index, akunkurir) {
 		var promise = $q.defer();
 
-		status_done.child(kurir +'/'+ index).set({
+		status_done.child(kurir +'/'+ akunkurir +'/'+ index).set({
 			'index': index
 		}).then(function() {
 			promise.resolve(true);
@@ -180,10 +193,10 @@ angular.module('app.services', [])
 	}
 
 	// add new entri di list ditolak
-	this.newCancel = function(kurir, index) {
+	this.newCancel = function(kurir, index, akunkurir) {
 		var promise = $q.defer();
 
-		status_cancel.child(kurir +'/'+ index).set({
+		status_cancel.child(kurir +'/'+ akunkurir +'/'+ index).set({
 			'index': index
 		}).then(function() {
 			promise.resolve(true);
@@ -204,10 +217,10 @@ angular.module('app.services', [])
 	}
 
 	// delete entri in process list
-	this.deleteProcess = function(kurir, index) {
+	this.deleteProcess = function(kurir, index, akunkurir) {
 		var promise = $q.defer();
 
-		status_process.child(kurir +'/'+ index).remove().then(function() {
+		status_process.child(kurir +'/'+ akunkurir +'/'+ index).remove().then(function() {
 			promise.resolve(true);
 		});
 

@@ -9,6 +9,10 @@ angular.module('app', ['ionic', 'app.controllers', 'app.routes', 'app.directives
 
 .run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
+    // set permission on ios
+    if (device.platform == "iOs") {
+      window.FirebasePlugin.grantPermission();
+    }
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
     // for form inputs)
     if (window.cordova && window.cordova.plugins && window.cordova.plugins.Keyboard) {
@@ -19,6 +23,22 @@ angular.module('app', ['ionic', 'app.controllers', 'app.routes', 'app.directives
       // org.apache.cordova.statusbar required
       StatusBar.styleDefault();
     }
+
+    // listen to firebase push notification
+    window.FirebasePlugin.getToken(function(token) {
+      console.log('device token : '+token);
+      // should save token to firebase
+    }, function(err) {
+      console.log('error get token : '+err);
+    })
+
+    // do something if notification tapped
+    window.FirebasePlugin.onNotificationOpen(function(notification) {
+      console.log(JSON.stringify(notification));
+      console.log('tapped');
+    }, function(err) {
+      console.log(err);
+    })
   });
 })
 
