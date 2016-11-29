@@ -1,10 +1,10 @@
 <ion-view title="Riwayat" id="page4">
     <ion-content padding="true" class="has-header">
         <ion-list id="riwayat-list5">
-            <ion-item class="item-avatar  " id="riwayat-list-item9" ui-sref="tabsController.transaksi({index: order.indexTransaksi})" ng-repeat="order in orders">
+            <ion-item class="item-avatar item-text-wrap" id="riwayat-list-item9" ui-sref="tabsController.transaksi({index: order.indexTransaksi})" ng-repeat="order in orders">
             	<img ng-src="{{order.userPhotoUrl}}">
                 <h2>{{ order.namaUser }}</h2>
-                <p>ID Transaksi : {{ order.indexTransaksi }}</p>
+                <p><b>Restoran : {{ order.namaResto }}</b></p>
                 <p>Alamat Kirim : {{ order.alamatUser }}</p>
                 <p>Transaksi : {{ order.jumlah }}</p>
             </ion-item>

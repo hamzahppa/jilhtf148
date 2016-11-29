@@ -1,8 +1,8 @@
 var config = {
-	apiKey: "AIzaSyChy-hpkTYFmtOoctGzqriQ8iSApX4r6xc",
-	authDomain: "sandbox-mangan.firebaseapp.com",
-	databaseURL: "https://sandbox-mangan.firebaseio.com",
-	storageBucket: "sandbox-mangan.appspot.com",
+    apiKey: "AIzaSyCQz7kgKgqjOo6ptPdvEGJLxOCBKUPZEoY",
+    authDomain: "project-1449647215698534337.firebaseapp.com",
+    databaseURL: "https://project-1449647215698534337.firebaseio.com",
+    storageBucket: "project-1449647215698534337.appspot.com"
 };
 
 firebase.initializeApp(config);
@@ -93,9 +93,9 @@ angular.module('app.services', [])
 	}
 
 	// get status cancel
-	this.getOrderCancel = function(kurir) {
+	this.getOrderCancel = function(kurir, akunkurir) {
 		return promiseValue(
-			status_cancel.child(kurir)
+			status_cancel.child(kurir +'/'+ akunkurir)
 		);
 	}
 
@@ -116,6 +116,12 @@ angular.module('app.services', [])
 	this.getUserDetails = function(username) {
 		return promiseAdded(
 			user.orderByChild('username').equalTo(username)
+		);
+	}
+
+	this.checkOrderQueue = function(kurir, index) {
+		return promiseAdded(
+			order.child(kurir +'/'+ index +'/'+ akunkurir)
 		);
 	}
 

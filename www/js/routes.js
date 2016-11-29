@@ -91,12 +91,12 @@ angular.module('app.routes', ['ionicUIRouter'])
     controller: 'profilCtrl'
   })
 
-  .state('loginGate', {
-    url: '/loginGate',
-    templateUrl: 'templates/loginGate.html',
-    controller: 'loginGateCtrl'
+  .state('login', {
+    url: '/login',
+    templateUrl: 'templates/login.html',
+    controller: 'loginCtrl'
   })
 
-$urlRouterProvider.otherwise('/loginGate')
+$urlRouterProvider.otherwise('/page1/page2')
 
 });

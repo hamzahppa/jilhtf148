@@ -1,9 +1,7 @@
-<!-- <ion-view title="Login" hide-nav-bar="true" hide-back-button="true" id="login-page" cache-view="false" class="login"> -->
-<ion-modal-view class="login">
+<ion-view hide-nav-bar="true" hide-back-button="true" id="login-page" cache-view="false" class="login">
     <ion-content>
         <div class="top-content row">
             <div class="app-copy col col-top">
-                <!-- <h1 class="app-logo">MANGAN</h1> -->
                 <img src="img/mangan.png" width="40%">
                 <div class="spacer" style="width: 300px; height: 40px;"></div>
                 <p class="app-tagline">
@@ -18,7 +16,7 @@
                         <span class="input-label">Password</span>
                         <input type="password" ng-model="login.password">
                     </label>
-                    <button class="facebook-sign-in button button-block" ng-click="signIn()">
+                    <button class="button button-block" ng-click="signIn()">
                         Login
                     </button> 
                 </form>
@@ -32,26 +30,5 @@
                 <!-- <a ui-sref="tabsController.order" id="login-button1" class="facebook-sign-in button button-block">Sign in</a> -->
             </div>
         </div>
-
-<!--         <div class="spacer" style="width: 300px; height: 48px;"></div>
-        <div>
-            <img src="img/4fmQ6ZiNTmaP8S1iORpD_logo mangan s.png" width="25%" height="auto" style="display: block; margin-left: auto; margin-right: auto;">
-        </div>
-        <h1 id="login-heading1" style="color:#FFFFFF;text-align:center;">MANGAN</h1>
-        <form id="login-form1" class="list ">
-            <ion-list id="login-list6">
-                <label class="item item-input " id="login-input1">
-                    <span class="input-label">Username</span>
-                    <input type="text" placeholder="">
-                </label>
-                <label class="item item-input " id="login-input2">
-                    <span class="input-label">Password</span>
-                    <input type="password" placeholder="">
-                </label>
-            </ion-list>
-            <div class="spacer" style="height: 40px;"></div>
-            <a ui-sref="tabsController.order" id="login-button1" class=" button button-positive  button-block ">Log in</a>
-        </form> -->
     </ion-content>
-</ion-modal-view>
-<!-- </ion-view> -->
+</ion-view>

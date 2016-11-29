@@ -17,12 +17,12 @@
                 <span class="input-label">Restoran</span>
                 <input type="text" value="{{order.namaResto}}" readonly="true">
             </label> -->
-            <a class="item item-icon-left" ng-click="openMap(order.mapUser.lat, order.mapUser.long)">
+            <a class="item item-icon-left item-text-wrap" ng-click="openMap(order.mapUser.lat, order.mapUser.long)">
                 <i class="icon ion-ios-location-outline"></i>
                 <p>Alamat Kirim</p>
                 {{order.alamatUser}}
             </a>
-            <a class="item item-icon-left" ng-click="openMap(order.map.lat, order.map.long)">
+            <a class="item item-icon-left item-text-wrap" ng-click="openMap(order.map.lat, order.map.long)">
                 <i class="icon ion-ios-location-outline"></i>
                 <p>Resto</p>
                 {{order.namaResto}}
@@ -32,10 +32,10 @@
                 <p>Jarak - ETA</p>
                 {{distance}} - {{duration}}
             </a>
-            <a class="item item-icon-left" href="tel:{{order.noTelpUser}}">
+            <a class="item item-icon-left" href="tel:0{{order.noTelpUser}}">
                 <i class="icon ion-ios-telephone-outline"></i>
                 <p>Kontak</p>
-                {{order.noTelpUser}}
+                0{{order.noTelpUser}}
             </a>
 <!--             <a class="item item-avatar" id="transaksi-list-item15" href="">
                 <img ng-src="">
@@ -46,8 +46,8 @@
             <ion-list>
                 <ion-item class="item" ng-repeat="menu in order.pesanan">
                     <h2>{{menu.namaMenu}}</h2>
-                    <p>Jumlah : {{menu.jumlah}}</p>
-                    <p>Total Harga : {{menu.total}}</p>
+                    <p>Jumlah : {{menu.quantity}}</p>
+                    <p>Total Harga : {{menu.harga * menu.quantity}}</p>
                 </ion-item>
             </ion-list>
             <label class="item item-input " id="transaksi-input4">
