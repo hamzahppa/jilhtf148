@@ -102,6 +102,14 @@ angular.module('app.controllers', [])
 			}
 		})
 	}
+
+	$scope.getDate = function(timestamp) {
+		var x = new Date(timestamp);
+		var hours  = x.getHours();
+		var minute = "0"+x.getMinutes();
+		var time = hours+'.'+minute.substr(-2);
+		return time;
+	}
 })
    
 .controller('prosesCtrl', function ($scope, $stateParams, Services, $ionicLoading, $localStorage, $ionicHistory) {
@@ -379,6 +387,11 @@ angular.module('app.controllers', [])
 			// 	okType: 'button-balanced'
 			// });
 		});
+	}
+
+	$scope.openLine = function(lineUsername) {
+		console.log(lineUsername);
+		window.open('http://line.me/ti/p/~'+lineUsername, '_system');
 	}
 })
    

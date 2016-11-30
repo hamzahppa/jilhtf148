@@ -10,6 +10,7 @@ angular.module('app.routes', ['ionicUIRouter'])
 
   .state('tabsController.order', {
     url: '/page2',
+    cache: false,
     views: {
       'tab1': {
         templateUrl: 'templates/order.html',

@@ -4,6 +4,7 @@
             <ion-item class="item-avatar item-text-wrap" id="order-list-item5" ui-sref="tabsController.transaksi({index: order.indexTransaksi})" ng-repeat="order in orders">
             	<img ng-src="{{order.userPhotoUrl}}">
                 <h2>{{ order.namaUser }}</h2>
+                <p>Order Masuk : {{getDate(order.tgl)}}</p>
                 <p>Restoran : {{ order.namaResto }}</p>
                 <p>Alamat Kirim : {{ order.alamatUser }}</p>
                 <p>Transaksi : {{ order.jumlah }}</p>

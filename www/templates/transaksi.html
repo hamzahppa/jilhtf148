@@ -1,22 +1,11 @@
 <ion-view title="Transaksi" id="page6" cache-view="false">
     <ion-content padding="true" class="has-header">
         <div>
-            <img ng-src="{{order.userPhotoUrl}}" width="40%" height="auto" style="border-radius:50%; border:1px solid gray; display: block; margin-left: auto; margin-right: auto; margin-top: 10px; margin-bottom: 10px;">
+            <img ng-src="{{order.gambarResto}}" width="90%" height="auto" style="border:1px solid gray; display: block; margin-left: auto; margin-right: auto; margin-top: 10px; margin-bottom: 10px;">
         </div>
         <center><h2>{{order.namaUser}}</h2></center>
         <h1 id="transaksi-heading2" style="color:#000000;">{{order.index}}</h1>
         <form id="transaksi-form2" class="list ">
-<!--             <label class="item item-input " id="transaksi-input3">
-                <span class="input-label">Nama</span>
-                <input type="text" value="{{order.namaUser}}" readonly="true">
-            </label>
-            <label class="item item-input " id="transaksi-textarea1">
-                <span class="input-label">Alamat</span><textarea readonly="true">{{order.alamatUser}}</textarea>
-            </label>
-            <label class="item item-input " id="transaksi-input5">
-                <span class="input-label">Restoran</span>
-                <input type="text" value="{{order.namaResto}}" readonly="true">
-            </label> -->
             <a class="item item-icon-left item-text-wrap" ng-click="openMap(order.mapUser.lat, order.mapUser.long)">
                 <i class="icon ion-ios-location-outline"></i>
                 <p>Alamat Kirim</p>
@@ -26,6 +15,12 @@
                 <i class="icon ion-ios-location-outline"></i>
                 <p>Resto</p>
                 {{order.namaResto}}
+                <br>
+                <p>Buka</p>
+                {{order.keteranganBuka}}
+                <br>
+                <p>Alamat</p>
+                {{order.alamat}}
             </a>
             <a class="item item-icon-left">
                 <i class="icon ion-ios-location-outline"></i>
@@ -36,6 +31,11 @@
                 <i class="icon ion-ios-telephone-outline"></i>
                 <p>Kontak</p>
                 0{{order.noTelpUser}}
+            </a>
+            <a class="item item-icon-left" ng-click="openLine(order.lineUsername)">
+                <i class="icon ion-ios-chatboxes-outline"></i>
+                <p>Line User</p>
+                {{order.lineUsername}}
             </a>
 <!--             <a class="item item-avatar" id="transaksi-list-item15" href="">
                 <img ng-src="">
@@ -48,8 +48,13 @@
                     <h2>{{menu.namaMenu}}</h2>
                     <p>Jumlah : {{menu.quantity}}</p>
                     <p>Total Harga : {{menu.harga * menu.quantity}}</p>
+                    <p>Catatan : {{menu.note}}</p>
                 </ion-item>
             </ion-list>
+            <ion-item class="item">
+                <h2>Pesanan Tambahan</h2>
+                <p>{{order.tambahan}}</p>
+            </ion-item>
             <label class="item item-input " id="transaksi-input4">
                 <span class="input-label">Transaksi</span>
                 <input type="number" ng-model="order.jumlah" readonly="true">
