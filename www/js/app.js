@@ -8,7 +8,7 @@
 angular.module('app', ['ionic', 'app.controllers', 'app.routes', 'app.directives','app.services', 'ngStorage', 'ngCordova'])
 
 .run(function($ionicPlatform) {
-  $ionicPlatform.ready(function() {
+  $ionicPlatform.ready(function($state) {
     // set permission on ios
     if (device.platform == "iOs") {
       window.FirebasePlugin.grantPermission();
@@ -34,8 +34,8 @@ angular.module('app', ['ionic', 'app.controllers', 'app.routes', 'app.directives
 
     // do something if notification tapped
     window.FirebasePlugin.onNotificationOpen(function(notification) {
-      console.log(JSON.stringify(notification));
       console.log('tapped');
+      $state.go('tabsController.order');
     }, function(err) {
       console.log(err);
     })

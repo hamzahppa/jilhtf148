@@ -1,5 +1,10 @@
 <ion-view title="Ditolak" id="page7">
     <ion-content padding="true" class="has-header">
+        <ion-refresher
+            pulling-text="Tarik untuk memperbarui"
+            on-refresh="refresh()"
+            spinner = "ripple" >
+        </ion-refresher>
         <ion-list id="ditolak-list10">
             <ion-item class="item-thumbnail-left item-text-wrap" id="ditolak-list-item17" ui-sref="tabsController.transaksi_tab1({index: order.indexTransaksi})" ng-repeat="order in orders">
             	<img ng-src="{{order.userPhotoUrl}}">

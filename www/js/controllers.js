@@ -65,6 +65,16 @@ angular.module('app.controllers', [])
 		}
 	})
 
+	$scope.refresh = function() {
+		var user = firebase.auth().currentUser;
+		if (user) {
+			$scope.getOrder(user.email);
+			$scope.$broadcast('scroll.refreshComplete');
+		} else {
+			$state.go('login');
+		}
+	}
+
 	$scope.getOrder = function(email) {
 		window.FirebasePlugin.logEvent("View", {page: "List Order"});
 		console.log('View List Order');
@@ -123,13 +133,16 @@ angular.module('app.controllers', [])
 		}
 	})
 
-	// firebase.auth().onAuthStateChanged(function(user) {
-	// 	if (user) {
-	// 		$scope.getProcess(user.email);
-	// 	} else {
-	// 		$state.go('login');
-	// 	}
-	// })
+	$scope.refresh = function() {
+		var user = firebase.auth().currentUser;
+		if (user) {
+			$scope.getProcess(user.email);
+			$scope.$broadcast('scroll.refreshComplete');
+		} else {
+			$state.go('login');
+			$scope.$broadcast('scroll.refreshComplete');
+		}
+	}
 
 	$scope.getProcess = function(email) {
 		$ionicLoading.show({
@@ -158,8 +171,17 @@ angular.module('app.controllers', [])
 				});
 			} else {
 				// no kurir
+				$ionicLoading.hide();
 			}
 		})
+	}
+
+	$scope.getDate = function(timestamp) {
+		var x = new Date(timestamp);
+		var hours  = x.getHours();
+		var minute = "0"+x.getMinutes();
+		var time = hours+'.'+minute.substr(-2);
+		return time;
 	}
 })
    
@@ -174,13 +196,16 @@ angular.module('app.controllers', [])
 		}
 	});
 
-	// firebase.auth().onAuthStateChanged(function(user) {
-	// 	if (user) {
-	// 		$scope.getHistory(user.email);
-	// 	} else {
-	// 		$state.go('login');
-	// 	}
-	// })
+	$scope.refresh = function() {
+		var user = firebase.auth().currentUser;
+		if (user) {
+			$scope.getHistory(user.email);
+			$scope.$broadcast('scroll.refreshComplete');
+		} else {
+			$state.go('login');
+			$scope.$broadcast('scroll.refreshComplete');
+		}
+	}
 
 	$scope.getHistory = function(email) {
 		$ionicLoading.show({
@@ -210,6 +235,14 @@ angular.module('app.controllers', [])
 			}
 		})	
 	}
+
+	$scope.getDate = function(timestamp) {
+		var x = new Date(timestamp);
+		var hours  = x.getHours();
+		var minute = "0"+x.getMinutes();
+		var time = hours+'.'+minute.substr(-2);
+		return time;
+	}
 })
 
 .controller('transaksiCtrl', function ($scope, $state, $stateParams, Services, $ionicLoading, $cordovaGeolocation, $ionicHistory, $http, GoogleMaps) {
@@ -218,16 +251,11 @@ angular.module('app.controllers', [])
 		duration: 5000
 	})
 
-	// firebase.auth().onAuthStateChanged(function(user) {
-	// 	if (user) {
-	// 		// $scope.getTransaksi(user.email);
-	// 		console.log(user.email);
-	// 	} else {
-	// 		$state.go('login');
-	// 	}
-	// })
+	// $scope.refresh = function() {
+	// 	$scope.getTransaksi();
+	// }
 
-	// // $scope.getTransaksi = function() {
+	// $scope.getTransaksi = function() {
 		var user = firebase.auth().currentUser;
 		if (!user) {
 			$state.go('login');
@@ -266,24 +294,30 @@ angular.module('app.controllers', [])
 						// 		console.log(err);
 						// 	});
 						// }
+						$scope.$broadcast('scroll.refreshComplete');
 						$ionicLoading.hide();
 					} else {
 						// no order
+						$scope.$broadcast('scroll.refreshComplete');
 						console.log('cant get transaksi, no order');
 					}
 				}, function(error) {
 					// error
+					$scope.$broadcast('scroll.refreshComplete');
 					console.log('cant get transaksi, error');
 				})
 			} else {
 				// nokurir
+			$scope.$broadcast('scroll.refreshComplete');
 				console.log('cant get transaksi, no kurir');
 			}
 		}, function(error) {
-			// error
+			$scope.$broadcast('scroll.refreshComplete');
 			console.log('cant get transaksi, error kurir');
 		})		
-	// // }
+	// }
+
+	// $scope.getTransaksi();
 
 	$scope.changeStatus = function(status) {
 		$ionicLoading.show({
@@ -298,22 +332,24 @@ angular.module('app.controllers', [])
 					if (status == 'process' && order.status == 'queue') {
 						Services.changeStatus(status, kurir.kurir, $scope.order.indexTransaksi).then(function() {
 							if (status === 'process') {
-								Services.newProcess(kurir.kurir, $scope.order.indexTransaksi, kurir.index).then(function() {
-									Services.updateFee($scope.order.feedelivery, $scope.order.jumlah+$scope.order.feedelivery, kurir.kurir, $scope.order.indexTransaksi).then(function() {
-										Services.deleteQueue(kurir.kurir, $scope.order.indexTransaksi).then(function() {
-											$state.go('tabsController.proses');
-											$ionicLoading.hide();
+								Services.updateTransaksi(kurir.kurir, $scope.order.indexTransaksi, kurir.index, kurir.lineOA, kurir.lineUsername, kurir.kontak, kurir.nama).then(function() {
+									Services.newProcess(kurir.kurir, $scope.order.indexTransaksi, kurir.index).then(function() {
+										Services.updateFee($scope.order.feedelivery, $scope.order.jumlah+$scope.order.feedelivery, kurir.kurir, $scope.order.indexTransaksi).then(function() {
+											Services.deleteQueue(kurir.kurir, $scope.order.indexTransaksi).then(function() {
+												$state.go('tabsController.proses');
+												$ionicLoading.hide();
+											}, function(err) {
+												// should be a callback
+												console.log('error delete queue : '+err);
+											});
 										}, function(err) {
 											// should be a callback
-											console.log('error delete queue : '+err);
+											console.log('err updateFee : '+err);
 										});
 									}, function(err) {
 										// should be a callback
-										console.log('err updateFee : '+err);
+										console.log('error create new process : '+err);
 									});
-								}, function(err) {
-									// should be a callback
-									console.log('error create new process : '+err);
 								});
 							}
 						}, function(err) {
@@ -396,7 +432,6 @@ angular.module('app.controllers', [])
 })
    
 .controller('ditolakCtrl', function ($scope, $stateParams, Services, $ionicLoading) {
-
 	firebase.auth().onAuthStateChanged(function(user) {
 		if (user) {
 			$scope.getDitolak(user.email);
@@ -404,6 +439,18 @@ angular.module('app.controllers', [])
 			$state.go('login');
 		}
 	})
+
+	$scope.refresh = function() {
+		firebase.auth().onAuthStateChanged(function(user) {
+			if (user) {
+				$scope.getDitolak(user.email);
+				$scope.$broadcast('scroll.refreshComplete');
+			} else {
+				$state.go('login');
+				$scope.$broadcast('scroll.refreshComplete');
+			}
+		})
+	}
 
 	$scope.getDitolak = function(email) {
 		$ionicLoading.show({
@@ -451,8 +498,7 @@ angular.module('app.controllers', [])
 	})
 })
 
-.controller('profilCtrl', function($scope, $state, Services, $localStorage, $ionicModal) {
-	// profile code
+.controller('profilCtrl', function($scope, $state, Services, $localStorage, $ionicModal, $ionicLoading) {
 	var user = firebase.auth().currentUser;
 	if (user) {
 		console.log(user);
@@ -478,5 +524,19 @@ angular.module('app.controllers', [])
 		}, function(error) {
 			console.log(error);
 		});
+	}
+
+	$scope.updateProfile = function() {
+		$ionicLoading.show({
+			template: '<ion-spinner icon="spiral" class="spinner-balanced"></ion-spinner>',
+			duration: 5000
+		})
+		Services.updateProfile($scope.kurir).then(function() {
+			alert('Data diperbarui');
+			$ionicLoading.hide();
+		}, function(err) {
+			console.log(err);
+			$ionicLoading.hide();
+		})
 	}
 })

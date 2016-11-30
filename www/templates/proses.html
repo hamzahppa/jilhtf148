@@ -1,5 +1,10 @@
 <ion-view title="Proses" id="page3">
     <ion-content padding="true" class="has-header">
+        <ion-refresher
+            pulling-text="Lepas untuk memperbarui"
+            on-refresh="refresh()"
+            spinner = "ripple" >
+        </ion-refresher>
         <ion-list id="proses-list4">
             <ion-item class="item-avatar item-text-wrap" id="proses-list-item8" ui-sref="tabsController.transaksi({index: order.indexTransaksi})" ng-repeat="order in orders">
             	<img ng-src="{{order.userPhotoUrl}}">

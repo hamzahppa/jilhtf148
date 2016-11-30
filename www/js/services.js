@@ -17,6 +17,7 @@ var status_cancel = firebase.database().ref('status').child('cancel');
 var kurir = firebase.database().ref('kurir');
 var menu = firebase.database().ref('dataMenu');
 var user = firebase.database().ref('user');
+var transaksi = firebase.database().ref('transaksi');
 
 angular.module('app.services', [])
 
@@ -227,6 +228,32 @@ angular.module('app.services', [])
 		var promise = $q.defer();
 
 		status_process.child(kurir +'/'+ akunkurir +'/'+ index).remove().then(function() {
+			promise.resolve(true);
+		});
+
+		return promise.promise;
+	}
+
+	this.updateProfile = function(data) {
+		var promise = $q.defer();
+
+		kurir.child(data.index).update(data).then(function() {
+			promise.resolve(true);
+		});
+
+		return promise.promise;
+	}
+
+	this.updateTransaksi = function(kurir, index, indexKurir, lineOA, lineUsername, kontakKurir, namaKurir) {
+		var promise = $q.defer();
+
+		transaksi.child(kurir +'/'+ index).update({
+			'indexKurir' : indexKurir,
+			'lineOA' : lineOA,
+			'lineUsername' : lineUsername || null,
+			'kontakKurir' : kontakKurir,
+			'namaKurir' : namaKurir
+		}).then(function() {
 			promise.resolve(true);
 		});
 
