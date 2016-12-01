@@ -6,12 +6,20 @@
             spinner = "ripple" >
         </ion-refresher>
 
-        <ion-list id="order-list3">
-            <ion-item class="item-avatar item-text-wrap" id="order-list-item5" ui-sref="tabsController.transaksi({index: order.indexTransaksi})" ng-repeat="order in orders">
-            	<img ng-src="{{order.userPhotoUrl}}">
+        <div style="width: 100%; height: auto; padding: 30px 10px;" ng-hide="orders.length > 0 || orders == 'null'">
+            <center>
+            <i class="ion-bag" style="font-size: 48px;"></i>
+            <p style="margin-top: 20px;">Belum ada order</p>
+            <p>Tarik kebawah untuk memperbarui</p>
+            </center>
+        </div>
+
+        <ion-list>
+            <ion-item class="item-avatar item-text-wrap" ng-repeat="order in orders | orderObjectBy: 'tgl' :true track by order.indexTransaksi" ui-sref="tabsController.transaksi({index: order.indexTransaksi})">
+            	<img ng-src="{{order.gambarRestoran}}">
+                <p>{{getDate(order.tgl)}}</p>
                 <h2>{{ order.namaUser }}</h2>
-                <p>Order Masuk : {{getDate(order.tgl)}}</p>
-                <p>Restoran : {{ order.namaResto }}</p>
+                <p><b>Restoran : {{ order.namaResto }}</b></p>
                 <p>Alamat Kirim : {{ order.alamatUser }}</p>
                 <p>Transaksi : {{ order.jumlah }}</p>
             </ion-item>

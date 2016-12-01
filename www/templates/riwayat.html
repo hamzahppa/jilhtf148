@@ -5,9 +5,19 @@
             on-refresh="refresh()"
             spinner = "ripple" >
         </ion-refresher>
-        <ion-list id="riwayat-list5">
-            <ion-item class="item-avatar item-text-wrap" id="riwayat-list-item9" ui-sref="tabsController.transaksi({index: order.indexTransaksi})" ng-repeat="order in orders">
-            	<img ng-src="{{order.userPhotoUrl}}">
+
+        <div style="width: 100%; height: auto; padding: 30px 10px;" ng-hide="orders.length > 0 || orders == 'null'">
+            <center>
+            <i class="ion-bag" style="font-size: 48px;"></i>
+            <p style="margin-top: 20px;">Tidak ada riwayat order</p>
+            <p>Tarik kebawah untuk memperbarui</p>
+            </center>
+        </div>
+
+        <ion-list>
+            <ion-item class="item item-avatar item-text-wrap" ng-repeat="order in orders | orderObjectBy: 'tgl' :true track by order.indexTransaksi" ui-sref="tabsController.transaksi({index: order.indexTransaksi})">
+                <img ng-src="{{order.gambarResto}}">
+                <p>{{getDate(order.tgl)}}</p>
                 <h2>{{ order.namaUser }}</h2>
                 <p><b>Restoran : {{ order.namaResto }}</b></p>
                 <p>Alamat Kirim : {{ order.alamatUser }}</p>

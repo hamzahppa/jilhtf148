@@ -122,7 +122,7 @@ angular.module('app.controllers', [])
 	}
 })
    
-.controller('prosesCtrl', function ($scope, $stateParams, Services, $ionicLoading, $localStorage, $ionicHistory) {
+.controller('prosesCtrl', function ($scope, $stateParams, Services, $ionicLoading, $localStorage, $ionicHistory, $state) {
 	$scope.$on('$ionicView.enter', function() {
 		$ionicHistory.clearHistory();
 		var user = firebase.auth().currentUser;
@@ -185,7 +185,7 @@ angular.module('app.controllers', [])
 	}
 })
    
-.controller('riwayatCtrl', function ($scope, $stateParams, Services, $ionicLoading, $ionicHistory) {
+.controller('riwayatCtrl', function ($scope, $stateParams, Services, $ionicLoading, $ionicHistory, $state) {
 	$scope.$on('$ionicView.enter', function() {
 		$ionicHistory.clearHistory();
 		var user = firebase.auth().currentUser;
@@ -431,7 +431,7 @@ angular.module('app.controllers', [])
 	}
 })
    
-.controller('ditolakCtrl', function ($scope, $stateParams, Services, $ionicLoading) {
+.controller('ditolakCtrl', function ($scope, $stateParams, Services, $ionicLoading, $state) {
 	firebase.auth().onAuthStateChanged(function(user) {
 		if (user) {
 			$scope.getDitolak(user.email);
