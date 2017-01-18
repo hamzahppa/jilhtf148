@@ -139,7 +139,10 @@ angular.module('app.services', [])
 	this.changeStatus = function(status, kurir, index) {
 		var promise = $q.defer();
 
-		order.child(kurir +'/'+ index +'/status').set(status).then(function() {
+		order.child(kurir +'/'+ index).update({
+			'status' : status,
+			'statusUpdateTime' : firebase.database.ServerValue.TIMESTAMP
+		}).then(function() {
 			promise.resolve(true);
 		});
 
