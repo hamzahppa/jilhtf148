@@ -7,12 +7,8 @@
 // 'starter.controllers' is found in controllers.js
 angular.module('app', ['ionic', 'app.controllers', 'app.routes', 'app.directives','app.services', 'ngStorage', 'ngCordova'])
 
-.run(function($ionicPlatform) {
+.run(function($ionicPlatform, $state, $ionicPopup, Services, $localStorage) {
   $ionicPlatform.ready(function($state) {
-    // set permission on ios
-    if (device.platform == "iOs") {
-      window.FirebasePlugin.grantPermission();
-    }
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
     // for form inputs)
     if (window.cordova && window.cordova.plugins && window.cordova.plugins.Keyboard) {
@@ -27,19 +23,32 @@ angular.module('app', ['ionic', 'app.controllers', 'app.routes', 'app.directives
     // listen to firebase push notification
     window.FirebasePlugin.getToken(function(token) {
       console.log('device token : '+token);
-      // should save token to firebase
     }, function(err) {
       console.log('error get token : '+err);
+    })
+
+    window.FirebasePlugin.onTokenRefresh(function(token) {
+      console.log('device token refresh : '+token);
+    }, function(err) {
+      console.log('err get token : '+err);
     })
 
     // do something if notification tapped
     window.FirebasePlugin.onNotificationOpen(function(notification) {
       console.log('tapped');
-      $state.go('tabsController.order');
+      alert("Order Baru");
     }, function(err) {
       console.log(err);
     })
+
+    window.FirebasePlugin.subscribe("mangan");
   });
+
+  // set permission on ios
+  if (ionic.Platform.isIOS()) {
+    window.FirebasePlugin.grantPermission();
+    console.log("permission iOS granted");
+  }
 })
 
 .config(['$ionicConfigProvider', function($ionicConfigProvider) {

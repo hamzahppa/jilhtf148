@@ -89,14 +89,21 @@ angular.module('app.controllers', [])
 						$scope.orders = [];
 						console.log('create orders');
 						for(var r in orders) {
+							// set date limit 3 hours
+							var date = new Date();
+							var currentTime = date.getTime() ;
+							var timeLimit = currentTime - 10800000;
+
+							// get Order Detail
 							Services.getOrderDetails(kurir.kurir, r).then(function(order) {
-								$scope.orders.push(order);
-								
-								$ionicLoading.hide();
+								if (order.tgl >= timeLimit) {
+									$scope.orders.push(order);
+								}
 							}, function(err) {
 								console.log(err);
 							});
 						}
+						$ionicLoading.hide();
 					} else {
 						$scope.orders = [];
 						$ionicLoading.hide();
@@ -155,12 +162,19 @@ angular.module('app.controllers', [])
 					if (orders) {
 						$scope.orders = [];
 						for(var r in orders) {
-							Services.getOrderDetails(kurir.kurir, r).then(function(order) {
-								$scope.orders.push(order);
+							// set date limit 24 hours
+							var date = new Date();
+							var currentTime = date.getTime() ;
+							var timeLimit = currentTime - 86400000;
 
-								$ionicLoading.hide();
+							// get Order Detail
+							Services.getOrderDetails(kurir.kurir, r).then(function(order) {
+								if (order.tgl >= timeLimit) {
+									$scope.orders.push(order);	
+								}
 							});
 						}
+						$ionicLoading.hide();
 					} else {
 						$scope.orders = [];
 						$ionicLoading.hide();
@@ -218,12 +232,19 @@ angular.module('app.controllers', [])
 					if (orders) {
 						$scope.orders = [];
 						for(var r in orders) {
-							Services.getOrderDetails(kurir.kurir, r).then(function(order) {
-								$scope.orders.push(order);
+							// set date limit 1 week
+							var date = new Date();
+							var currentTime = date.getTime() ;
+							var timeLimit = currentTime - 604800000;
 
-								$ionicLoading.hide();
+							// get Order Detail
+							Services.getOrderDetails(kurir.kurir, r).then(function(order) {
+								if (order.tgl >= timeLimit) {
+									$scope.orders.push(order);
+								}
 							});
 						}
+						$ionicLoading.hide();
 					} else {
 						$scope.orders = [];
 						$ionicLoading.hide();
@@ -320,31 +341,65 @@ angular.module('app.controllers', [])
 	// $scope.getTransaksi();
 
 	$scope.changeStatus = function(status) {
+		console.log('change status to : '+status);
 		$ionicLoading.show({
 			template: '<ion-spinner icon="spiral" class="spinner-balanced"></ion-spinner>',
 			duration: 5000
 		})
 		// some code to change status
 		Services.getKurirData(user.email).then(function(kurir) {
-			console.log(status);
 			if (kurir) {
 				Services.getOrderDetails(kurir.kurir, $stateParams.index).then(function(order) {
 					if (status == 'process' && order.status == 'queue') {
 						Services.changeStatus(status, kurir.kurir, $scope.order.indexTransaksi).then(function() {
-							if (status === 'process') {
-								Services.updateTransaksi(kurir.kurir, $scope.order.indexTransaksi, kurir.index, kurir.lineOA, kurir.lineUsername, kurir.kontak, kurir.nama).then(function() {
+							console.log('status dirubah ke process');
+							if (status == 'process') {
+								Services.updateTransaksi(
+									kurir.kurir, 
+									$scope.order.indexTransaksi, 
+									kurir.index, 
+									kurir.lineUsername, 
+									kurir.kontak, 
+									kurir.nama, 
+									kurir.lineOA, 
+									kurir.photoUrl, 
+									$scope.order.feedelivery, 
+									$scope.order.jumlah+$scope.order.feedelivery
+								).then(function() {
+									console.log('data transaksi dirubah');
 									Services.newProcess(kurir.kurir, $scope.order.indexTransaksi, kurir.index).then(function() {
-										Services.updateFee($scope.order.feedelivery, $scope.order.jumlah+$scope.order.feedelivery, kurir.kurir, $scope.order.indexTransaksi).then(function() {
-											Services.deleteQueue(kurir.kurir, $scope.order.indexTransaksi).then(function() {
-												$state.go('tabsController.proses');
-												$ionicLoading.hide();
+										console.log('menambah list proses baru');
+										Services.deleteQueue(kurir.kurir, $scope.order.indexTransaksi).then(function() {
+											console.log('menghapus list pesanan')
+											// send message to user
+											var notificationData = {
+												"notification":{
+													"title":"Terima kasih telah memesan",
+													"body":"Pesanan anda telah diproses oleh "+kurir.nama,
+													"sound":"default",
+													"icon":"fcm_push_icon"
+												},
+												"to": $scope.order.device_token,
+												"priority":"high",
+												"restricted_package_name":"com.manganindonesia.mangan"
+											}
+
+											$http.post('https://fcm.googleapis.com/fcm/send', notificationData, {
+												headers: {
+													"Content-Type" : "application/json",
+													"Authorization" : "key=AIzaSyD-AE-K7XNFFfwl-VWnmKW0PHMTHJBtQKo"
+												}
+											}).then(function(result) {
+												console.log(JSON.stringify(result));
 											}, function(err) {
-												// should be a callback
-												console.log('error delete queue : '+err);
-											});
+												console.log(err);
+											})
+
+											$state.go('tabsController.proses');
+											$ionicLoading.hide();
 										}, function(err) {
 											// should be a callback
-											console.log('err updateFee : '+err);
+											console.log('error delete queue : '+err);
 										});
 									}, function(err) {
 										// should be a callback

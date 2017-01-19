@@ -14,6 +14,8 @@
             </center>
         </div>
 
+        <center ng-show="orders.length > 0" ><p>Riwayat Transaksi 1 Minggu</p></center>
+
         <ion-list>
             <ion-item class="item item-avatar item-text-wrap" ng-repeat="order in orders | orderObjectBy: 'tgl' :true track by order.indexTransaksi" ui-sref="tabsController.transaksi({index: order.indexTransaksi})">
                 <img ng-src="{{order.gambarResto}}">

@@ -1,8 +1,18 @@
+// firebase mangan
+// var config = {
+//     apiKey: "AIzaSyCQz7kgKgqjOo6ptPdvEGJLxOCBKUPZEoY",
+//     authDomain: "project-1449647215698534337.firebaseapp.com",
+//     databaseURL: "https://project-1449647215698534337.firebaseio.com",
+//     storageBucket: "project-1449647215698534337.appspot.com"
+// };
+
+// firebase manganbak
 var config = {
-    apiKey: "AIzaSyCQz7kgKgqjOo6ptPdvEGJLxOCBKUPZEoY",
-    authDomain: "project-1449647215698534337.firebaseapp.com",
-    databaseURL: "https://project-1449647215698534337.firebaseio.com",
-    storageBucket: "project-1449647215698534337.appspot.com"
+    apiKey: "AIzaSyB1U7icSEQX4ZTCdsRHxDUFieD-r7sDFKA",
+    authDomain: "manganbak.firebaseapp.com",
+    databaseURL: "https://manganbak.firebaseio.com",
+    storageBucket: "manganbak.appspot.com",
+    messagingSenderId: "374536724800"
 };
 
 firebase.initializeApp(config);
@@ -17,7 +27,6 @@ var status_cancel = firebase.database().ref('status').child('cancel');
 var kurir = firebase.database().ref('kurir');
 var menu = firebase.database().ref('dataMenu');
 var user = firebase.database().ref('user');
-var transaksi = firebase.database().ref('transaksi');
 
 angular.module('app.services', [])
 
@@ -130,7 +139,10 @@ angular.module('app.services', [])
 	this.changeStatus = function(status, kurir, index) {
 		var promise = $q.defer();
 
-		order.child(kurir +'/'+ index +'/status').set(status).then(function() {
+		order.child(kurir +'/'+ index).update({
+			'status' : status,
+			'statusUpdateTime' : firebase.database.ServerValue.TIMESTAMP
+		}).then(function() {
 			promise.resolve(true);
 		});
 
@@ -244,15 +256,19 @@ angular.module('app.services', [])
 		return promise.promise;
 	}
 
-	this.updateTransaksi = function(kurir, index, indexKurir, lineOA, lineUsername, kontakKurir, namaKurir) {
+	this.updateTransaksi = function(kurir, index, indexKurir, lineUsername, kontakKurir, namaKurir, lineOA, photoUrlKurir, feedelivery, total) {
 		var promise = $q.defer();
 
-		transaksi.child(kurir +'/'+ index).update({
+		order.child(kurir +'/'+ index).update({
 			'indexKurir' : indexKurir,
-			'lineOA' : lineOA,
-			'lineUsername' : lineUsername || null,
+			'lineUsernameKurir' : lineUsername || null,
 			'kontakKurir' : kontakKurir,
-			'namaKurir' : namaKurir
+			'namaKurir' : namaKurir,
+			'lineOA' : lineOA || null,
+			'kurirPhotoUrl' : photoUrlKurir,
+			'timeProcess' : firebase.database.ServerValue.TIMESTAMP,
+			'feedelivery' : feedelivery,
+			'totalHarga' : total
 		}).then(function() {
 			promise.resolve(true);
 		});

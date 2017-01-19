@@ -20,7 +20,11 @@
     "cordova-plugin-whitelist",
     "cordova-plugin-splashscreen",
     "cordova-plugin-statusbar",
-    "ionic-plugin-keyboard"
+    "ionic-plugin-keyboard",
+    "cordova-plugin-firebase@~0.1.17",
+    "cordova-plugin-geolocation",
+    "cordova-plugin-firebase@0.1.18",
+    "cordova-plugin-inappbrowser"
   ],
   "cordovaPlatforms": [
     "android"

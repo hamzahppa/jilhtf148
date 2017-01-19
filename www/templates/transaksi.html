@@ -15,6 +15,8 @@
                 <i class="icon ion-ios-location-outline"></i>
                 <p>Alamat Kirim</p>
                 {{order.alamatUser}}
+                <p>Keterangan Detail Alamat</p>
+                {{order.alamatUserDetail}}
             </a>
             <a class="item item-icon-left item-text-wrap" ng-click="openMap(order.map.lat, order.map.long)">
                 <i class="icon ion-ios-location-outline"></i>
@@ -49,17 +51,13 @@
             </a> -->
             <ion-item class="item-divider " id="transaksi-list-item-divider1">Menu</ion-item>
             <ion-list>
-                <ion-item class="item" ng-repeat="menu in order.pesanan">
+                <ion-item class="item item-text-wrap" ng-repeat="menu in order.pesanan">
                     <h2>{{menu.namaMenu}}</h2>
                     <p>Jumlah : {{menu.quantity}}</p>
                     <p>Total Harga : {{menu.harga * menu.quantity}}</p>
-                    <p>Catatan : {{menu.note}}</p>
+                    <p ng-show="menu.note">Catatan : {{menu.note}}</p>
                 </ion-item>
             </ion-list>
-            <ion-item class="item">
-                <h2>Pesanan Tambahan</h2>
-                <p>{{order.tambahan}}</p>
-            </ion-item>
             <label class="item item-input " id="transaksi-input4">
                 <span class="input-label">Transaksi</span>
                 <input type="number" ng-model="order.jumlah" readonly="true">
