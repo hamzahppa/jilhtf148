@@ -55,13 +55,9 @@
                     <h2>{{menu.namaMenu}}</h2>
                     <p>Jumlah : {{menu.quantity}}</p>
                     <p>Total Harga : {{menu.harga * menu.quantity}}</p>
-                    <p>Catatan : {{menu.note}}</p>
+                    <p ng-show="menu.note">Catatan : {{menu.note}}</p>
                 </ion-item>
             </ion-list>
-            <ion-item class="item">
-                <h2>Pesanan Tambahan</h2>
-                <p>{{order.tambahan}}</p>
-            </ion-item>
             <label class="item item-input " id="transaksi-input4">
                 <span class="input-label">Transaksi</span>
                 <input type="number" ng-model="order.jumlah" readonly="true">
