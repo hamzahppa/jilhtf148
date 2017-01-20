@@ -441,7 +441,7 @@ angular.module('app.controllers', [])
 							console.log('error change status : '+err);
 						});
 					} else {
-						alert('Order diambil kurir lain');
+						alert('Order diambil kurir lain atau dibatalkan customer');
 						$state.go('tabsController.order');
 					}
 				}, function(err) {
