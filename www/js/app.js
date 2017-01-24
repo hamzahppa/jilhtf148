@@ -35,11 +35,37 @@ angular.module('app', ['ionic', 'app.controllers', 'app.routes', 'app.directives
 
     // do something if notification tapped
     window.FirebasePlugin.onNotificationOpen(function(notification) {
-      console.log('tapped');
-      alert("Order Baru");
+      // if notification received in background, on tap, it didn't open the app! how frustating
+
+      // Check notification Body (notification from us)
+      // From us, there is body attribute
+      if (notification.body) {
+        // Foreground, tap = false
+        if (notification.tap == false) {
+          $ionicPopup.alert({
+            title: notification.title,
+            template: notification.body,
+            okText: 'OK',
+            okType: 'button-balanced'
+          });
+        }
+        // Background
+        else if(notification.tap == true) {
+          $ionicPopup.alert({
+            title: notification.title,
+            template: notification.body,
+            okText: 'OK',
+            okType: 'button-balanced'
+          });
+        }
+      } else {
+        // do nothing, not from us
+        console.log('wild notification content :'+JSON.stringify(notification));
+      }
     }, function(err) {
       console.log(err);
     })
+
 
     window.FirebasePlugin.subscribe("mangan");
   });

@@ -45,11 +45,17 @@ angular.module('app.controllers', [])
 			// clear login variable
 			$scope.login = [];
 		}).catch(function(error) {
-			// Handle Errors here.
-  			var errorCode = error.code;
-  			var errorMessage = error.message;
-  			console.log(errorCode);
-  			console.log(errorMessage);
+			var errorCode = error.code;
+			// error auth/user-not-found
+			if (errorCode == "auth/user-not-found") {
+				alert("Alamat email salah");
+			} 
+			// error auth/wrong-password
+			else if (errorCode == "auth/wrong-password") {
+				alert("Password salah");
+			}
+			$ionicLoading.hide();
+			$scope.login = [];
   		});
 	}
 })
@@ -378,6 +384,10 @@ angular.module('app.controllers', [])
 													"body":"Pesanan anda telah diproses oleh "+kurir.nama,
 													"sound":"default",
 													"icon":"fcm_push_icon"
+												},
+												"data": {
+													"title":"Terima kasih telah memesan",
+													"body":"Pesanan anda telah diproses oleh "+kurir.nama
 												},
 												"to": $scope.order.device_token,
 												"priority":"high",
