@@ -51,7 +51,8 @@ angular.module('app.services', [])
 	localStorage
 	$localStorage = $localStorage.$default({
 		email : null,
-		kurir : null
+		kurir : null,
+		token : null
 	})
 
 	this.connectFirebase = function() {
@@ -270,6 +271,18 @@ angular.module('app.services', [])
 			'feedelivery' : feedelivery,
 			'totalHarga' : total
 		}).then(function() {
+			promise.resolve(true);
+		});
+
+		return promise.promise;
+	}
+
+	this.setToken = function(index, token) {
+		var promise = $q.defer();
+
+		kurir.child(index).update({
+			"token" : token
+		}).then(function(){
 			promise.resolve(true);
 		});
 

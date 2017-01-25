@@ -19,6 +19,7 @@ angular.module('app.controllers', [])
 					// subsribe to topic kurir on cloud messaging
 					window.FirebasePlugin.subscribe(kurir.kurir);
 					console.log('subsribe to : '+kurir.kurir);
+					Services.setToken(kurir.index, $localStorage.token);
 				} else {
 					console.log('no kurir');
 				}

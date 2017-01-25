@@ -22,12 +22,31 @@ angular.module('app', ['ionic', 'app.controllers', 'app.routes', 'app.directives
 
     // listen to firebase push notification
     window.FirebasePlugin.getToken(function(token) {
+      $localStorage.token = token;
+
+      var user = firebase.auth().currentUser;
+      if (user) {
+        Services.getKurirData(user.email).then(function(kurir) {
+          if (kurir) {
+            Services.setToken(kurir.index, token);
+          }
+        });
+      }
       console.log('device token : '+token);
     }, function(err) {
       console.log('error get token : '+err);
     })
 
     window.FirebasePlugin.onTokenRefresh(function(token) {
+      $localStorage.token = token;
+      var user = firebase.auth().currentUser;
+      if (user) {
+        Services.getKurirData(user.email).then(function(kurir) {
+          if (kurir) {
+            Services.setToken(kurir.index, token);            
+          }
+        });
+      }
       console.log('device token refresh : '+token);
     }, function(err) {
       console.log('err get token : '+err);
