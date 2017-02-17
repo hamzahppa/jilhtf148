@@ -61,9 +61,10 @@ angular.module('app.controllers', [])
 	}
 })
   
-.controller('orderCtrl', function ($scope, $stateParams, Services, $ionicLoading, $ionicModal, $state, $localStorage, $ionicHistory) {
+.controller('orderCtrl', function ($scope, $stateParams, Services, $ionicLoading, $ionicModal, $state, $localStorage, $ionicHistory, $ionicPlatform) {
 	$scope.$on('$ionicView.enter', function() {
 		$ionicHistory.clearHistory();
+		console.log('enter order');
 		var user = firebase.auth().currentUser;
 		if (user) {
 			$scope.getOrder(user.email);
@@ -71,6 +72,16 @@ angular.module('app.controllers', [])
 			$state.go('login');
 		}
 	})
+
+	$ionicPlatform.on('resume', function(){
+	    console.log('resume');
+		var user = firebase.auth().currentUser;
+		if (user) {
+			$scope.getOrder(user.email);
+		} else {
+			$state.go('login');
+		}
+	});
 
 	$scope.refresh = function() {
 		var user = firebase.auth().currentUser;
@@ -89,6 +100,7 @@ angular.module('app.controllers', [])
 			template: '<ion-spinner icon="spiral" class="spinner-balanced"></ion-spinner>',
 			duration: 5000
 		});
+
 		Services.getKurirData(email).then(function(kurir) {
 			if (kurir) {
 				Services.getOrderQueue(kurir.kurir).then(function(orders) {
@@ -110,6 +122,7 @@ angular.module('app.controllers', [])
 								console.log(err);
 							});
 						}
+						console.log(orders);
 						$ionicLoading.hide();
 					} else {
 						$scope.orders = [];
@@ -136,7 +149,7 @@ angular.module('app.controllers', [])
 	}
 })
    
-.controller('prosesCtrl', function ($scope, $stateParams, Services, $ionicLoading, $localStorage, $ionicHistory, $state) {
+.controller('prosesCtrl', function ($scope, $stateParams, Services, $ionicLoading, $localStorage, $ionicHistory, $state, $ionicPlatform) {
 	$scope.$on('$ionicView.enter', function() {
 		$ionicHistory.clearHistory();
 		var user = firebase.auth().currentUser;
@@ -145,7 +158,18 @@ angular.module('app.controllers', [])
 		} else {
 			$state.go('login');
 		}
+		// $scope.refresh();
 	})
+
+	$ionicPlatform.on('resume', function(){
+	    console.log('resume');
+		var user = firebase.auth().currentUser;
+		if (user) {
+			$scope.getProcess(user.email);
+		} else {
+			$state.go('login');
+		}
+	});
 
 	$scope.refresh = function() {
 		var user = firebase.auth().currentUser;
@@ -206,9 +230,20 @@ angular.module('app.controllers', [])
 	}
 })
    
-.controller('riwayatCtrl', function ($scope, $stateParams, Services, $ionicLoading, $ionicHistory, $state) {
+.controller('riwayatCtrl', function ($scope, $stateParams, Services, $ionicLoading, $ionicHistory, $state, $ionicPlatform) {
 	$scope.$on('$ionicView.enter', function() {
 		$ionicHistory.clearHistory();
+		var user = firebase.auth().currentUser;
+		if (user) {
+			$scope.getHistory(user.email);
+		} else {
+			$state.go('login');
+		}
+		// $scope.refresh();
+	});
+
+	$ionicPlatform.on('resume', function(){
+	    console.log('resume');
 		var user = firebase.auth().currentUser;
 		if (user) {
 			$scope.getHistory(user.email);
