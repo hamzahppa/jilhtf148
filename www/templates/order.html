@@ -15,7 +15,7 @@
         </div>
 
         <ion-list>
-            <ion-item class="item-avatar item-text-wrap" ng-repeat="order in orders | orderObjectBy: 'tgl' :true track by order.indexTransaksi" ui-sref="tabsController.transaksi({index: order.indexTransaksi})">
+            <ion-item class="item-avatar item-text-wrap" ng-repeat="order in orders | orderObjectBy: 'tgl' :true track by order.indexTransaksi" native-transitions ui-sref="tabsController.transaksi({index: order.indexTransaksi})">
             	<img ng-src="{{order.gambarResto}}">
                 <p>{{getDate(order.tgl)}}</p>
                 <h2>{{ order.namaUser }}</h2>

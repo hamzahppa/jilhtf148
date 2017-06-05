@@ -46,17 +46,22 @@ angular.module('app.controllers', [])
 			// clear login variable
 			$scope.login = [];
 		}).catch(function(error) {
+			$ionicLoading.hide();
 			var errorCode = error.code;
 			// error auth/user-not-found
 			if (errorCode == "auth/user-not-found") {
 				alert("Alamat email salah");
-			} 
+				return false;
+			}
 			// error auth/wrong-password
 			else if (errorCode == "auth/wrong-password") {
 				alert("Password salah");
+				return false;
 			}
-			$ionicLoading.hide();
-			$scope.login = [];
+			else {
+				alert('Login gagal, periksa jaringan');
+				return false;
+			}
   		});
 	}
 })
@@ -87,7 +92,6 @@ angular.module('app.controllers', [])
 		var user = firebase.auth().currentUser;
 		if (user) {
 			$scope.getOrder(user.email);
-			$scope.$broadcast('scroll.refreshComplete');
 		} else {
 			$state.go('login');
 		}
@@ -98,7 +102,7 @@ angular.module('app.controllers', [])
 		console.log('View List Order');
 		$ionicLoading.show({
 			template: '<ion-spinner icon="spiral" class="spinner-balanced"></ion-spinner>',
-			duration: 5000
+			duration: 10000
 		});
 
 		Services.getKurirData(email).then(function(kurir) {
@@ -122,20 +126,23 @@ angular.module('app.controllers', [])
 								console.log(err);
 							});
 						}
-						console.log(orders);
 						$ionicLoading.hide();
+						$scope.$broadcast('scroll.refreshComplete');
 					} else {
 						$scope.orders = [];
 						$ionicLoading.hide();
+						$scope.$broadcast('scroll.refreshComplete');
 					}
 				}, function(reason) {
 					console.log('Error fetch data');
 					$ionicLoading.hide();
+					$scope.$broadcast('scroll.refreshComplete');
 					$state.go('login');
 					// $scope.modalLogin.show();
 				});	
 			} else {
 				// no kurir
+				$state.go('login');
 			}
 		})
 	}
@@ -185,7 +192,7 @@ angular.module('app.controllers', [])
 	$scope.getProcess = function(email) {
 		$ionicLoading.show({
 			template: '<ion-spinner icon="spiral" class="spinner-balanced"></ion-spinner>',
-			duration: 5000
+			duration: 10000
 		})
 		Services.getKurirData(email).then(function(kurir) {
 			if (kurir) {
@@ -206,17 +213,21 @@ angular.module('app.controllers', [])
 							});
 						}
 						$ionicLoading.hide();
+						$scope.$broadcast('scroll.refreshComplete');
 					} else {
 						$scope.orders = [];
 						$ionicLoading.hide();
+						$scope.$broadcast('scroll.refreshComplete');
 					}
 				}, function(reason) {
 					console.log('Error fetch data');
 					$ionicLoading.hide();
+					$scope.$broadcast('scroll.refreshComplete');
 				});
 			} else {
 				// no kurir
 				$ionicLoading.hide();
+				$scope.$broadcast('scroll.refreshComplete');
 			}
 		})
 	}
@@ -266,7 +277,7 @@ angular.module('app.controllers', [])
 	$scope.getHistory = function(email) {
 		$ionicLoading.show({
 			template: '<ion-spinner icon="spiral" class="spinner-balanced"></ion-spinner>',
-			duration: 5000
+			duration: 10000
 		});
 		Services.getKurirData(email).then(function(kurir) {
 			if (kurir) {
@@ -287,13 +298,16 @@ angular.module('app.controllers', [])
 							});
 						}
 						$ionicLoading.hide();
+						$scope.$broadcast('scroll.refreshComplete');
 					} else {
 						$scope.orders = [];
 						$ionicLoading.hide();
+						$scope.$broadcast('scroll.refreshComplete');
 					}
 				}, function(reason) {
 					console.log('Error fetch data');
 					$ionicLoading.hide();
+					$scope.$broadcast('scroll.refreshComplete');
 				});
 			}
 		})	
@@ -311,7 +325,7 @@ angular.module('app.controllers', [])
 .controller('transaksiCtrl', function ($scope, $state, $stateParams, Services, $ionicLoading, $cordovaGeolocation, $ionicHistory, $http, GoogleMaps) {
 	$ionicLoading.show({
 		template: '<ion-spinner icon="spiral" class="spinner-balanced"></ion-spinner>',
-		duration: 5000
+		duration: 10000
 	})
 
 	// $scope.refresh = function() {
@@ -556,7 +570,7 @@ angular.module('app.controllers', [])
 	$scope.getDitolak = function(email) {
 		$ionicLoading.show({
 			template: '<ion-spinner icon="spiral" class="spinner-balanced"></ion-spinner>',
-			duration: 5000
+			duration: 10000
 		})
 		Services.getKurirData(email).then(function(kurir) {
 			if (kurir) {
@@ -573,10 +587,12 @@ angular.module('app.controllers', [])
 					} else {
 						$scope.orders = [];
 						$ionicLoading.hide();
+						$scope.$broadcast('scroll.refreshComplete');
 					}
 				}, function(reason) {
 					console.log('Error fetch data');
 					$ionicLoading.hide();
+					$scope.$broadcast('scroll.refreshComplete');
 				});
 			}
 		})	

@@ -23,7 +23,8 @@
     "cordova-plugin-firebase@~0.1.17",
     "cordova-plugin-geolocation",
     "cordova-plugin-firebase@0.1.18",
-    "cordova-plugin-inappbrowser"
+    "cordova-plugin-inappbrowser",
+    "cordova-plugin-crosswalk-webview"
   ],
   "cordovaPlatforms": [
     "android"

@@ -11,6 +11,7 @@ angular.module('app.routes', ['ionicUIRouter'])
   .state('tabsController.order', {
     url: '/page2',
     cache: false,
+    nativeTransitions: null,
     views: {
       'tab1': {
         templateUrl: 'templates/order.html',
@@ -22,6 +23,7 @@ angular.module('app.routes', ['ionicUIRouter'])
   .state('tabsController.proses', {
     url: '/page3',
     cache: false,
+    nativeTransitions: null,
     views: {
       'tab2': {
         templateUrl: 'templates/proses.html',
@@ -33,6 +35,7 @@ angular.module('app.routes', ['ionicUIRouter'])
   .state('tabsController.riwayat', {
     url: '/page4',
     cache: false,
+    nativeTransitions: null,
     views: {
       'tab3': {
         templateUrl: 'templates/riwayat.html',
