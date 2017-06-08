@@ -1,10 +1,10 @@
 <ion-view title="Transaksi" id="page6" cache-view="false">
     <ion-content padding="true" class="has-header">
-<!--         <ion-refresher
+        <ion-refresher
             pulling-text="Tarik untuk memperbarui"
             on-refresh="refresh()"
             spinner = "ripple" >
-        </ion-refresher> -->
+        </ion-refresher>
         <div>
             <img ng-src="{{order.gambarResto}}" width="90%" height="auto" style="border:1px solid gray; display: block; margin-left: auto; margin-right: auto; margin-top: 10px; margin-bottom: 10px;">
         </div>
@@ -29,26 +29,26 @@
                 <p>Alamat</p>
                 {{order.alamat}}
             </a>
-            <a class="item item-icon-left">
+            <a class="item item-icon-left" ng-show="distance && duration">
                 <i class="icon ion-ios-location-outline"></i>
                 <p>Jarak - ETA</p>
                 {{distance}} - {{duration}}
             </a>
-            <a class="item item-icon-left" href="tel:0{{order.noTelpUser}}">
+            <a class="item item-icon-left" href="tel:{{order.noTelpUser}}">
                 <i class="icon ion-ios-telephone-outline"></i>
                 <p>Kontak</p>
-                0{{order.noTelpUser}}
+                {{order.noTelpUser}}
             </a>
-            <a class="item item-icon-left" ng-click="openLine(order.lineUsername)">
+            <a class="item item-icon-left" ng-click="openLine(order.lineUsername)" ng-show="order.lineUsername">
                 <i class="icon ion-ios-chatboxes-outline"></i>
                 <p>Line User</p>
                 {{order.lineUsername}}
             </a>
-<!--             <a class="item item-avatar" id="transaksi-list-item15" href="">
-                <img ng-src="">
-                <h2>Kontak</h2>
-                <p>{{order.noTelpUser}}</p>
-            </a> -->
+            <a class="item item-icon-left" ng-click="openWhatsapp(order.noTelpUser)">
+                <i class="icon ion-social-whatsapp-outline"></i>
+                <p>Whatsapp (Bisa tidak tersedia)</p>
+                {{order.noTelpUser}}
+            </a>
             <ion-item class="item-divider " id="transaksi-list-item-divider1">Menu</ion-item>
             <ion-list>
                 <ion-item class="item item-text-wrap" ng-repeat="menu in order.pesanan">

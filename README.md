@@ -48,3 +48,7 @@ it's ngstorage (with small s!!) and not ngStorage (with capital S!!)
 * save device token to server
 * fix bug data not load when opening apps (order, process, done)
 * improve performance
+
+## 1.1.1
+* bug fixing
+* remove crosswalk

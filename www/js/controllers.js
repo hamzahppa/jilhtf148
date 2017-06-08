@@ -323,20 +323,25 @@ angular.module('app.controllers', [])
 })
 
 .controller('transaksiCtrl', function ($scope, $state, $stateParams, Services, $ionicLoading, $cordovaGeolocation, $ionicHistory, $http, GoogleMaps) {
-	$ionicLoading.show({
-		template: '<ion-spinner icon="spiral" class="spinner-balanced"></ion-spinner>',
-		duration: 10000
-	})
+	var user = firebase.auth().currentUser;
+	if (!user) {
+		$state.go('login');
+		$ionicLoading.hide();
+	}
+	
+	$scope.$on('$ionicView.enter', function() {
+		$scope.getTransaksi();
+	});
 
-	// $scope.refresh = function() {
-	// 	$scope.getTransaksi();
-	// }
+	$scope.refresh = function() {
+		$scope.getTransaksi();
+	}
 
-	// $scope.getTransaksi = function() {
-		var user = firebase.auth().currentUser;
-		if (!user) {
-			$state.go('login');
-		}
+	$scope.getTransaksi = function() {
+		$ionicLoading.show({
+			template: '<ion-spinner icon="spiral" class="spinner-balanced"></ion-spinner>',
+			duration: 5000
+		})
 		Services.getKurirData(user.email).then(function(kurir) {
 			if (kurir) {
 				Services.getOrderDetails(kurir.kurir, $stateParams.index).then(function(order) {
@@ -377,24 +382,28 @@ angular.module('app.controllers', [])
 						// no order
 						$scope.$broadcast('scroll.refreshComplete');
 						console.log('cant get transaksi, no order');
+						$ionicLoading.hide();
 					}
 				}, function(error) {
 					// error
 					$scope.$broadcast('scroll.refreshComplete');
 					console.log('cant get transaksi, error');
+					$ionicLoading.hide();
 				})
 			} else {
 				// nokurir
-			$scope.$broadcast('scroll.refreshComplete');
+				$scope.$broadcast('scroll.refreshComplete');
 				console.log('cant get transaksi, no kurir');
+				$ionicLoading.hide();
 			}
 		}, function(error) {
 			$scope.$broadcast('scroll.refreshComplete');
 			console.log('cant get transaksi, error kurir');
+			$ionicLoading.hide();
 		})		
-	// }
+	}
 
-	// $scope.getTransaksi();
+	$scope.getTransaksi();
 
 	$scope.changeStatus = function(status) {
 		console.log('change status to : '+status);
@@ -543,6 +552,11 @@ angular.module('app.controllers', [])
 	$scope.openLine = function(lineUsername) {
 		console.log(lineUsername);
 		window.open('http://line.me/ti/p/~'+lineUsername, '_system');
+	}
+
+	$scope.openWhatsapp = function(number) {
+		console.log(number);
+		window.open('https://api.whatsapp.com/send?phone='+parseInt(number)+"&text=Saya dari kurir mangan ingin bertanya", '_system');
 	}
 })
    
